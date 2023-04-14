@@ -10,6 +10,11 @@ body {
 }
 
 #canvas {
-  background-color: black;
+  background-image: url(../img/background1.png);
+  background-size: cover;
   height: 100vh;
+}
+
+#canvas:hover {
+  cursor: crosshair;
 }
