@@ -73,11 +73,34 @@ function drawStars() {
 
 function animateJetSprite() {
     fireSprite.currentframe++;
-
     context.drawImage(fireSprite.img, fireSprite.currentframe * fireSprite.width, 0, fireSprite.width, fireSprite.height, shipPos.x - 13, shipPos.y + 55, fireSprite.width, fireSprite.height);
-
-
     if (fireSprite.currentframe >= fireSprite.totalframes) {
         fireSprite.currentframe = 0;
+    }
+}
+
+function generateRocks() {
+    activeRocks.push({
+        speed: rock.speed,
+        size: Math.random() * (rock.size / 2) + rock.size / 2,
+        hp: rock.hp,
+        x: Math.random() * 1000,
+        y: -50,
+        rotation: (Math.random() * 360)
+    })
+}
+
+function drawRocks() {
+    for (let i = 0; i < activeRocks.length; i++) {
+        activeRocks[i].rotation += 0.5
+        context.save();
+        context.translate(activeRocks[i].x, activeRocks[i].y)
+        context.rotate(Math.PI / 180 * - activeRocks[i].rotation)
+        context.drawImage(rockImg, -activeRocks[i].size / 2, -activeRocks[i].size / 2, activeRocks[i].size, activeRocks[i].size)
+        context.restore()
+        //context.fillRect(activeRocks[i].x, activeRocks[i].y, 5, 5)
+        activeRocks[i].y += activeRocks[i].speed
+        if (activeRocks[i].y > 1100)
+            activeRocks.splice(i, 1)
     }
 }
