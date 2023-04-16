@@ -20,7 +20,7 @@ canvas.addEventListener("mouseout", () => {
 })
 
 function moveShip() {
-    if (Math.sqrt(Math.abs((mousePos.x - shipPos.x) * (mousePos.x - shipPos.x) - ((mousePos.y - shipPos.y) * (mousePos.y - shipPos.y)))) < 100) {
+    if (checkDistance(mousePos, shipPos) < 150) {
         shipPos.x += (mousePos.x - shipPos.x) / (shipSpeed / 2)
         shipPos.y += (mousePos.y - shipPos.y) / (shipSpeed / 2)
     }
@@ -36,6 +36,7 @@ function fire() {
     activeBullets.push({
         speed: bullet.speed,
         size: bullet.size,
+        dmg: bullet.dmg,
         x: shipPos.x,
         y: shipPos.y - 70
     })
@@ -86,21 +87,64 @@ function generateRocks() {
         hp: rock.hp,
         x: Math.random() * 1000,
         y: -50,
-        rotation: (Math.random() * 360)
+        rotation: (Math.random() * 360),
+        xSpeed: ((Math.random() * 20) - 10) / 20
     })
 }
 
 function drawRocks() {
+    for (i = 0; i < activeRocks.length; i++)
+        if (activeRocks[i].y > 1050)
+            activeRocks.splice(i, 1)
     for (let i = 0; i < activeRocks.length; i++) {
+        activeRocks[i].x += activeRocks[i].xSpeed
         activeRocks[i].rotation += 0.5
-        context.save();
+        context.save()
         context.translate(activeRocks[i].x, activeRocks[i].y)
         context.rotate(Math.PI / 180 * - activeRocks[i].rotation)
-        context.drawImage(rockImg, -activeRocks[i].size / 2, -activeRocks[i].size / 2, activeRocks[i].size, activeRocks[i].size)
+        context.drawImage(rockImg, -activeRocks[i].size * 1.6, -activeRocks[i].size * 1.6, activeRocks[i].size * 3.2, activeRocks[i].size * 3.2)
         context.restore()
-        //context.fillRect(activeRocks[i].x, activeRocks[i].y, 5, 5)
+        /* context.beginPath();
+          context.arc(activeRocks[i].x, activeRocks[i].y, activeRocks[i].size / 2 + 5, 0, Math.PI / 180 * 360);
+                 context.closePath();
+                 context.fillStyle = 'rgba(248, 248, 248,0.5)';
+                 context.fill(); 
+         */
+        // context.fillRect(activeRocks[i].x, activeRocks[i].y, activeRocks[i].size / 2, activeRocks[i].size / 2)
         activeRocks[i].y += activeRocks[i].speed
-        if (activeRocks[i].y > 1100)
-            activeRocks.splice(i, 1)
     }
 }
+
+function rockBulletColl() {
+    for (let i = 0; i < activeRocks.length; i++) {
+        for (let j = 0; j < activeBullets.length; j++) {
+            if (activeRocks[i] && activeBullets[j])
+                if (checkDistance(activeRocks[i], activeBullets[j]) < (activeRocks[i].size / 2 + activeBullets[j].size)) {
+                    activeRocks[i].hp -= activeBullets[j].dmg
+                    if (activeRocks[i].hp <= 0)
+                        activeRocks.splice(i, 1)
+                    activeBullets.splice(j, 1)
+                }
+        }
+    }
+}
+
+function explodeBullet(i) {
+
+}
+
+function checkDistance(obj1, obj2) {
+    return (Math.sqrt(Math.abs((obj1.x - obj2.x) * (obj1.x - obj2.x) + ((obj1.y - obj2.y) * (obj1.y - obj2.y)))))
+}
+
+function togglePause() {
+    if (drawInterval === null)
+        startIntervals()
+    else
+        clearIntervals()
+}
+
+document.addEventListener("keypress", (e) => {
+    if (e.key == "p" || e.key == "P")
+        togglePause()
+})
