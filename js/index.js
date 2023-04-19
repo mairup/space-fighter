@@ -56,7 +56,7 @@ function startDrawInterval() {
         drawRocks()
         rockBulletColl()
         for (let i = 0; i < activeRocks.length; i++)
-            shipRockColl(i)
+            shipRockColl(activeRocks[i], "rock")
     }, drawIntervalTime)
 }
 

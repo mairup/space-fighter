@@ -126,8 +126,8 @@ function drawRocks() {
 }
 
 function rockBulletColl() {
-    for (let i = 0; i < activeRocks.length; i++) {
-        for (let j = 0; j < activeBullets.length; j++) {
+    for (let i = 0; i < activeRocks.length; i++)
+        for (let j = 0; j < activeBullets.length; j++)
             if (activeRocks[i] && activeBullets[j])
                 if (checkDistance(activeRocks[i], activeBullets[j]) < (activeRocks[i].size / 2 + activeBullets[j].size)) {
                     activeRocks[i].hp -= activeBullets[j].dmg
@@ -135,8 +135,6 @@ function rockBulletColl() {
                         activeRocks.splice(i, 1)
                     activeBullets.splice(j, 1)
                 }
-        }
-    }
 }
 
 function explodeBullet(i) {
@@ -159,24 +157,24 @@ document.addEventListener("keypress", (e) => {
         togglePause()
 })
 
-function shipRockColl(i) {
+function shipColl(obj, type) {
     let flag = false
     for (let y = 0; y < 40; y++)
-        if (checkDistance(activeRocks[i], { x: shipPos.x, y: shipPos.y - 70 + y }) < 5 + activeRocks[i].size / 2)
+        if (checkDistance(obj, { x: shipPos.x, y: shipPos.y - 70 + y }) < 5 + obj.size / 2)
             flag = true
     for (let y = 0; y < 40; y++)
-        if (checkDistance(activeRocks[i], { x: shipPos.x, y: shipPos.y - 20 + y }) < 20 + activeRocks[i].size / 2)
+        if (checkDistance(obj, { x: shipPos.x, y: shipPos.y - 20 + y }) < 20 + obj.size / 2)
             flag = true
-    if (checkDistance(activeRocks[i], { x: shipPos.x, y: shipPos.y + 40 }) < 40 + activeRocks[i].size / 2)
+    if (checkDistance(obj, { x: shipPos.x, y: shipPos.y + 40 }) < 40 + obj.size / 2)
         flag = true
-    if (checkDistance(activeRocks[i], { x: shipPos.x + 50, y: shipPos.y + 55 }) < 15 + activeRocks[i].size / 2 || checkDistance(activeRocks[i], { x: shipPos.x - 50, y: shipPos.y + 55 }) < 15 + activeRocks[i].size / 2)
+    if (checkDistance(obj, { x: shipPos.x + 50, y: shipPos.y + 55 }) < 15 + obj.size / 2 || checkDistance(obj, { x: shipPos.x - 50, y: shipPos.y + 55 }) < 15 + obj.size / 2)
         flag = true
-    else if (checkDistance(activeRocks[i], { x: shipPos.x + 68, y: shipPos.y + 55 }) < 10 + activeRocks[i].size / 2 || checkDistance(activeRocks[i], { x: shipPos.x - 68, y: shipPos.y + 55 }) < 10 + activeRocks[i].size / 2)
+    else if (checkDistance(obj, { x: shipPos.x + 68, y: shipPos.y + 55 }) < 10 + obj.size / 2 || checkDistance(obj, { x: shipPos.x - 68, y: shipPos.y + 55 }) < 10 + obj.size / 2)
         flag = true
-    else if (checkDistance(activeRocks[i], { x: shipPos.x + 68, y: shipPos.y + 40 }) < 10 + activeRocks[i].size / 2 || checkDistance(activeRocks[i], { x: shipPos.x - 68, y: shipPos.y + 40 }) < 10 + activeRocks[i].size / 2)
+    else if (checkDistance(obj, { x: shipPos.x + 68, y: shipPos.y + 40 }) < 10 + obj.size / 2 || checkDistance(obj, { x: shipPos.x - 68, y: shipPos.y + 40 }) < 10 + obj.size / 2)
         flag = true
 
-    if (flag) {
+    if (flag && type == "rock") {
         activeRocks.splice(i, 1)
     }
 }
