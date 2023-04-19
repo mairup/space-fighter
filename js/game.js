@@ -1,5 +1,15 @@
 function drawShip() {
     context.drawImage(ship, shipPos.x - 75, shipPos.y - 75, 150, 150)
+    /*
+        context.beginPath()
+        context.fillStyle = 'rgb(255,100,50,0.5)'
+        context.arc(shipPos.x - 50, shipPos.y + 55, 15, 0, Math.PI / 180 * 360)
+        context.closePath()
+        context.fill()
+    
+        context.fillStyle = 'rgb(100,100,100,0.5)'
+        context.fillRect(shipPos.x, shipPos.y + 55, 35, 35)
+    */
 }
 
 canvas.addEventListener("mousemove", (e) => {
@@ -148,3 +158,25 @@ document.addEventListener("keypress", (e) => {
     if (e.key == "p" || e.key == "P")
         togglePause()
 })
+
+function shipRockColl(i) {
+    let flag = false
+    for (let y = 0; y < 40; y++)
+        if (checkDistance(activeRocks[i], { x: shipPos.x, y: shipPos.y - 70 + y }) < 5 + activeRocks[i].size / 2)
+            flag = true
+    for (let y = 0; y < 40; y++)
+        if (checkDistance(activeRocks[i], { x: shipPos.x, y: shipPos.y - 20 + y }) < 20 + activeRocks[i].size / 2)
+            flag = true
+    if (checkDistance(activeRocks[i], { x: shipPos.x, y: shipPos.y + 40 }) < 40 + activeRocks[i].size / 2)
+        flag = true
+    if (checkDistance(activeRocks[i], { x: shipPos.x + 50, y: shipPos.y + 55 }) < 15 + activeRocks[i].size / 2 || checkDistance(activeRocks[i], { x: shipPos.x - 50, y: shipPos.y + 55 }) < 15 + activeRocks[i].size / 2)
+        flag = true
+    else if (checkDistance(activeRocks[i], { x: shipPos.x + 68, y: shipPos.y + 55 }) < 10 + activeRocks[i].size / 2 || checkDistance(activeRocks[i], { x: shipPos.x - 68, y: shipPos.y + 55 }) < 10 + activeRocks[i].size / 2)
+        flag = true
+    else if (checkDistance(activeRocks[i], { x: shipPos.x + 68, y: shipPos.y + 40 }) < 10 + activeRocks[i].size / 2 || checkDistance(activeRocks[i], { x: shipPos.x - 68, y: shipPos.y + 40 }) < 10 + activeRocks[i].size / 2)
+        flag = true
+
+    if (flag) {
+        activeRocks.splice(i, 1)
+    }
+}
