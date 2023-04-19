@@ -1,14 +1,14 @@
 function drawShip() {
-    context.drawImage(ship, shipPos.x - 75, shipPos.y - 75, 150, 150)
+    context.drawImage(shipImg, ship.x - 75, ship.y - 75, 150, 150)
     /*
         context.beginPath()
         context.fillStyle = 'rgb(255,100,50,0.5)'
-        context.arc(shipPos.x - 50, shipPos.y + 55, 15, 0, Math.PI / 180 * 360)
+        context.arc(ship.x - 50, ship.y + 55, 15, 0, Math.PI / 180 * 360)
         context.closePath()
         context.fill()
     
         context.fillStyle = 'rgb(100,100,100,0.5)'
-        context.fillRect(shipPos.x, shipPos.y + 55, 35, 35)
+        context.fillRect(ship.x, ship.y + 55, 35, 35)
     */
 }
 
@@ -30,14 +30,14 @@ canvas.addEventListener("mouseout", () => {
 })
 
 function moveShip() {
-    if (checkDistance(mousePos, shipPos) < 150) {
-        shipPos.x += (mousePos.x - shipPos.x) / (shipSpeed / 2)
-        shipPos.y += (mousePos.y - shipPos.y) / (shipSpeed / 2)
+    if (checkDistance(mousePos, ship) < 150) {
+        ship.x += (mousePos.x - ship.x) / (ship.speed / 2)
+        ship.y += (mousePos.y - ship.y) / (ship.speed / 2)
     }
 
     else {
-        shipPos.x += (mousePos.x - shipPos.x) / shipSpeed
-        shipPos.y += (mousePos.y - shipPos.y) / shipSpeed
+        ship.x += (mousePos.x - ship.x) / ship.speed
+        ship.y += (mousePos.y - ship.y) / ship.speed
     }
 
 }
@@ -47,8 +47,8 @@ function fire() {
         speed: bullet.speed,
         size: bullet.size,
         dmg: bullet.dmg,
-        x: shipPos.x,
-        y: shipPos.y - 70
+        x: ship.x,
+        y: ship.y - 70
     })
     gunCD = setTimeout(() => {
         gunCD = 0
@@ -84,7 +84,7 @@ function drawStars() {
 
 function animateJetSprite() {
     fireSprite.currentframe++;
-    context.drawImage(fireSprite.img, fireSprite.currentframe * fireSprite.width, 0, fireSprite.width, fireSprite.height, shipPos.x - 13, shipPos.y + 55, fireSprite.width, fireSprite.height);
+    context.drawImage(fireSprite.img, fireSprite.currentframe * fireSprite.width, 0, fireSprite.width, fireSprite.height, ship.x - 13, ship.y + 55, fireSprite.width, fireSprite.height);
     if (fireSprite.currentframe >= fireSprite.totalframes) {
         fireSprite.currentframe = 0;
     }
@@ -157,21 +157,21 @@ document.addEventListener("keypress", (e) => {
         togglePause()
 })
 
-function shipColl(obj, type) {
+function shipColl(obj, type, i) {
     let flag = false
     for (let y = 0; y < 40; y++)
-        if (checkDistance(obj, { x: shipPos.x, y: shipPos.y - 70 + y }) < 5 + obj.size / 2)
+        if (checkDistance(obj, { x: ship.x, y: ship.y - 70 + y }) < 5 + obj.size / 2)
             flag = true
     for (let y = 0; y < 40; y++)
-        if (checkDistance(obj, { x: shipPos.x, y: shipPos.y - 20 + y }) < 20 + obj.size / 2)
+        if (checkDistance(obj, { x: ship.x, y: ship.y - 20 + y }) < 20 + obj.size / 2)
             flag = true
-    if (checkDistance(obj, { x: shipPos.x, y: shipPos.y + 40 }) < 40 + obj.size / 2)
+    if (checkDistance(obj, { x: ship.x, y: ship.y + 40 }) < 40 + obj.size / 2)
         flag = true
-    if (checkDistance(obj, { x: shipPos.x + 50, y: shipPos.y + 55 }) < 15 + obj.size / 2 || checkDistance(obj, { x: shipPos.x - 50, y: shipPos.y + 55 }) < 15 + obj.size / 2)
+    if (checkDistance(obj, { x: ship.x + 50, y: ship.y + 55 }) < 15 + obj.size / 2 || checkDistance(obj, { x: ship.x - 50, y: ship.y + 55 }) < 15 + obj.size / 2)
         flag = true
-    else if (checkDistance(obj, { x: shipPos.x + 68, y: shipPos.y + 55 }) < 10 + obj.size / 2 || checkDistance(obj, { x: shipPos.x - 68, y: shipPos.y + 55 }) < 10 + obj.size / 2)
+    else if (checkDistance(obj, { x: ship.x + 68, y: ship.y + 55 }) < 10 + obj.size / 2 || checkDistance(obj, { x: ship.x - 68, y: ship.y + 55 }) < 10 + obj.size / 2)
         flag = true
-    else if (checkDistance(obj, { x: shipPos.x + 68, y: shipPos.y + 40 }) < 10 + obj.size / 2 || checkDistance(obj, { x: shipPos.x - 68, y: shipPos.y + 40 }) < 10 + obj.size / 2)
+    else if (checkDistance(obj, { x: ship.x + 68, y: ship.y + 40 }) < 10 + obj.size / 2 || checkDistance(obj, { x: ship.x - 68, y: ship.y + 40 }) < 10 + obj.size / 2)
         flag = true
 
     if (flag && type == "rock") {

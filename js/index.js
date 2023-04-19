@@ -1,14 +1,19 @@
 const canvas = document.getElementById("canvas")
 const context = canvas.getContext("2d")
-const ship = document.getElementById("ship")
+const shipImg = document.getElementById("ship")
 const bulletB = document.getElementById("bulletB")
 const starImg = document.getElementById("star")
 const rockImg = document.getElementById("asteroid")
-let shipSpeed = 50 //higher is lower
 let leftTrigger = false
 let starGenTime = 1000
 let rockGenTime = 2000
 let drawIntervalTime = 10
+
+let ship = {
+    x: 500,
+    y: 800,
+    speed: 50 //higher is lower
+}
 
 var fireSprite = { img: null, x: 0, y: 0, width: 28, height: 60, currentframe: 0, totalframes: 9 }
 
@@ -31,11 +36,6 @@ let activeBullets = []
 let activeStars = []
 let activeRocks = []
 
-let shipPos = {
-    x: 500,
-    y: 800
-}
-
 let mousePos = {
     x: 500,
     y: 800
@@ -56,7 +56,7 @@ function startDrawInterval() {
         drawRocks()
         rockBulletColl()
         for (let i = 0; i < activeRocks.length; i++)
-            shipRockColl(activeRocks[i], "rock")
+            shipColl(activeRocks[i], "rock", i)
     }, drawIntervalTime)
 }
 
