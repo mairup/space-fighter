@@ -6,7 +6,7 @@ const starImg = document.getElementById("star")
 const rockImg = document.getElementById("asteroid")
 let leftTrigger = false
 let starGenTime = 1000
-let rockGenTime = 2000
+let rockGenTime = 1000
 let drawIntervalTime = 10
 
 let ship = {
@@ -15,14 +15,37 @@ let ship = {
     speed: 50 //higher is lower
 }
 
-var fireSprite = { img: null, x: 0, y: 0, width: 28, height: 60, currentframe: 0, totalframes: 9 }
+let fireSprite = {
+    img: null,
+    x: 0,
+    y: 0,
+    width: 28,
+    height: 60,
+    currentframe: 0,
+    totalframes: 9
+}
 
 fireSprite.img = new Image();
 fireSprite.img.src = "img/fireSprite3.png";
 
+let rockExplosionTemplate = {
+    img: null,
+    x: 100,
+    y: 100,
+    width: 96,
+    height: 96,
+    currentframe: 0,
+    totalframes: 7
+}
+
+rockExplosionTemplate.img = new Image()
+rockExplosionTemplate.img.src = "img/AsteroidExplode.png"
+
+let activeRockExplosions = []
+
 let bullet = {
     speed: 10,
-    rof: 300, //higher is lower
+    rof: 200, //higher is lower
     size: 10,
     dmg: 100
 }
@@ -57,6 +80,10 @@ function startDrawInterval() {
         rockBulletColl()
         for (let i = 0; i < activeRocks.length; i++)
             shipColl(activeRocks[i], "rock", i)
+
+        for (let i = 0; i < activeRockExplosions.length; i++)
+            drawRockExplosion(activeRockExplosions[i])
+
     }, drawIntervalTime)
 }
 

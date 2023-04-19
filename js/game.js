@@ -82,14 +82,6 @@ function drawStars() {
     }
 }
 
-function animateJetSprite() {
-    fireSprite.currentframe++;
-    context.drawImage(fireSprite.img, fireSprite.currentframe * fireSprite.width, 0, fireSprite.width, fireSprite.height, ship.x - 13, ship.y + 55, fireSprite.width, fireSprite.height);
-    if (fireSprite.currentframe >= fireSprite.totalframes) {
-        fireSprite.currentframe = 0;
-    }
-}
-
 function generateRocks() {
     activeRocks.push({
         speed: rock.speed,
@@ -132,13 +124,33 @@ function rockBulletColl() {
                 if (checkDistance(activeRocks[i], activeBullets[j]) < (activeRocks[i].size / 2 + activeBullets[j].size)) {
                     activeRocks[i].hp -= activeBullets[j].dmg
                     if (activeRocks[i].hp <= 0)
-                        activeRocks.splice(i, 1)
+                        explodeRock(i)
                     activeBullets.splice(j, 1)
                 }
 }
 
 function explodeBullet(i) {
+}
 
+function explodeRock(i) {
+    let explosion = { ...rockExplosionTemplate }
+    explosion.x = activeRocks[i].x
+    explosion.y = activeRocks[i].y
+    explosion.img = new Image();
+    explosion.img.src = "img/AsteroidExplode.png"
+    explosion.rotation = activeRocks[i].rotation
+    explosion.size = activeRocks[i].size
+
+    activeRocks.splice(i, 1)
+
+    activeRockExplosions.push(explosion)
+    let int = setInterval(() => {
+        explosion.currentframe++
+        if (explosion.currentframe >= explosion.totalframes) {
+            clearInterval(int)
+            activeRockExplosions.splice(i, 1)
+        }
+    }, 40);
 }
 
 function checkDistance(obj1, obj2) {
@@ -175,6 +187,26 @@ function shipColl(obj, type, i) {
         flag = true
 
     if (flag && type == "rock") {
-        activeRocks.splice(i, 1)
+        explodeRock(i)
     }
+}
+
+function animateJetSprite() {
+    fireSprite.currentframe++
+    context.drawImage(fireSprite.img, fireSprite.currentframe * fireSprite.width, 0, fireSprite.width, fireSprite.height, ship.x - 13, ship.y + 55, fireSprite.width, fireSprite.height)
+    if (fireSprite.currentframe >= fireSprite.totalframes) {
+        fireSprite.currentframe = 0
+    }
+}
+
+
+function drawRockExplosion(explosion) {
+
+    context.save()
+    context.translate(explosion.x, explosion.y)
+    context.rotate(Math.PI / 180 * - explosion.rotation)
+    //context.drawImage(explosion.img, -explosion.size * 1.6, -explosion.size * 1.6, explosion.size * 3.2, explosion.size * 3.2,)
+    context.drawImage(explosion.img, explosion.currentframe * explosion.width, 0, explosion.width, explosion.height, -explosion.size * 1.6, -explosion.size * 1.6, explosion.size * 3.2, explosion.size * 3.2)
+
+    context.restore()
 }
