@@ -15,7 +15,7 @@ soundManager.setup({
             autoLoad: true,
             autoPlay: false,
             volume: 20
-        })
+        })/*
         backAudio = soundManager.createSound({
             id: 'backAudioSound',
             url: 'audio/ScifiAmbient.wav',
@@ -24,8 +24,9 @@ soundManager.setup({
             onload: function () {
                 console.log('The sound ' + this.id + ' loaded!');
             },
+            loops: 999,
             volume: 50
-        })
+        })*/
     }
 })
 
