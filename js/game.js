@@ -53,6 +53,8 @@ function fire() {
     gunCD = setTimeout(() => {
         gunCD = 0
     }, bullet.rof)
+
+    blasterSound.play()
 }
 
 function drawBullets() {
@@ -151,6 +153,8 @@ function explodeRock(i) {
             activeRockExplosions.splice(i, 1)
         }
     }, 40);
+
+    explosion1Sound.play()
 }
 
 function checkDistance(obj1, obj2) {

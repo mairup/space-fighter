@@ -45,7 +45,7 @@ let activeRockExplosions = []
 
 let bullet = {
     speed: 10,
-    rof: 200, //higher is lower
+    rof: 300, //higher is lower
     size: 10,
     dmg: 100
 }
