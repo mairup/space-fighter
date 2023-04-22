@@ -86,6 +86,10 @@ function drawStars() {
 
 function generateRocks() {
     let tmp = Math.random() * (rock.size / 2) + rock.size / 2
+    let rotationSpeed = 0
+    while (rotationSpeed > -0.5 && rotationSpeed < 0.5)
+        rotationSpeed = ((Math.random() * 4) - 2) / 2
+
     activeRocks.push({
         speed: rock.speed,
         size: tmp,
@@ -94,7 +98,8 @@ function generateRocks() {
         x: Math.random() * 1000,
         y: -50,
         rotation: (Math.random() * 360),
-        xSpeed: ((Math.random() * 20) - 10) / 20
+        rotationSpeed: rotationSpeed,
+        xSpeed: ((Math.random() * 30) - 15) / 20
     })
 }
 
@@ -104,7 +109,7 @@ function drawRocks() {
             activeRocks.splice(i, 1)
     for (let i = 0; i < activeRocks.length; i++) {
         activeRocks[i].x += activeRocks[i].xSpeed
-        activeRocks[i].rotation += 0.5
+        activeRocks[i].rotation += activeRocks[i].rotationSpeed
         context.save()
         context.translate(activeRocks[i].x, activeRocks[i].y)
         context.rotate(Math.PI / 180 * - activeRocks[i].rotation)
@@ -133,7 +138,22 @@ function rockBulletColl() {
                 }
 }
 
+function enemyShipBulletColl() {
+    for (let i = 0; i < activeShips.length; i++)
+        for (let j = 0; j < activeBullets.length; j++) {
+            if (activeShips[i] && activeBullets[j])
+                if (checkDistance(activeShips[i], activeBullets[j]) < (activeShips[i].size / 2 + activeBullets[j].size)) {
+                    activeShips[i].hp -= activeBullets[j].dmg
+                    if (activeShips[i].hp <= 0)
+                        activeShips.splice(i, 1)
+                    activeBullets.splice(j, 1)
+                }
+        }
+
+}
+
 function explodeBullet(i) {
+
 }
 
 function explodeRock(i) {
@@ -157,6 +177,10 @@ function explodeRock(i) {
     }, 40);
 
     explosion1Sound.play()
+}
+
+function explodeShip(i) {
+    activeShips.splice(i, 1)
 }
 
 function checkDistance(obj1, obj2) {
@@ -196,6 +220,11 @@ function shipColl(obj, type, i) {
         ship.hp -= activeRocks[i].hp
         explodeRock(i)
     }
+
+    if (flag && type == "ship") {
+        ship.hp -= activeShips[i].hp
+        explodeShip(i)
+    }
 }
 
 function animateJetSprite() {
@@ -229,8 +258,44 @@ function drawHP() {
 }
 
 function drawMiniHP() {
-    for (let i = 0; i < activeRocks.length; i++) {
+    for (i = 0; i < activeRocks.length; i++) {
         context.drawImage(miniHpBar, activeRocks[i].x - activeRocks[i].size * 1.5 / 2, activeRocks[i].y - activeRocks[i].size, activeRocks[i].size * 1.5, 10)
         context.drawImage(miniHpBarBar, activeRocks[i].x - activeRocks[i].size * 1.5 / 2, activeRocks[i].y - activeRocks[i].size, (activeRocks[i].size * 1.5) * (activeRocks[i].hp / activeRocks[i].maxHP), 10)
+    }
+    for (let i = 0; i < activeShips.length; i++) {
+        context.drawImage(miniHpBar, activeShips[i].x - activeShips[i].size / 2, activeShips[i].y - activeShips[i].size / 1.5, activeShips[i].size, 10)
+        context.drawImage(miniHpBarBar, activeShips[i].x - activeShips[i].size / 2, activeShips[i].y - activeShips[i].size / 1.5, (activeShips[i].size) * (activeShips[i].hp / activeShips[i].maxHP), 10)
+    }
+}
+
+function spawnEnemyShip() {
+    let originalX = Math.random() * 700 + 150
+    activeShips.push({
+        size: enemyShips[0].size,
+        originalX: originalX,
+        x: originalX,
+        y: -enemyShips[0].size,
+        xSpeed: enemyShips[0].xSpeed,
+        ySpeed: enemyShips[0].ySpeed,
+        hp: enemyShips[0].hp,
+        maxHP: enemyShips[0].hp,
+        bullet: enemyBullets[0]
+    })
+}
+
+function drawEnemyShips() {
+    for (let i = 0; i < activeShips.length; i++) {
+        context.drawImage(enemyShipImg, activeShips[i].x - activeShips[i].size / 2, activeShips[i].y - activeShips[i].size / 2, activeShips[i].size, activeShips[i].size)
+        activeShips[i].y += activeShips[i].ySpeed
+        if (Math.abs(activeShips[i].x - activeShips[i].originalX) > 100)
+            activeShips[i].xSpeed = -activeShips[i].xSpeed
+        activeShips[i].x += (Math.abs(activeShips[i].x - activeShips[i].originalX)) > 90 ? activeShips[i].xSpeed / 2 : activeShips[i].xSpeed
+
+        /*
+        context.beginPath();
+        context.arc(activeShips[i].x, activeShips[i].y, activeShips[i].size / 2, 0, Math.PI / 180 * 360);
+        context.fillStyle = 'rgba(214, 56, 45, 0.3)';
+        context.fill();
+        context.closePath();*/
     }
 }

@@ -1,5 +1,4 @@
 soundManager.setup({
-    url: 'node_modules/soundmanager2/swf',
     preferFlash: false,
     onready: function () {
         blasterSound = soundManager.createSound({
