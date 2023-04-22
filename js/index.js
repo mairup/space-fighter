@@ -5,13 +5,13 @@ const bulletB = document.getElementById("bulletB")
 const starImg = document.getElementById("star")
 const rockImg = document.getElementById("asteroid")
 const hpTable = new Image()
-hpTable.src = "../img/hp_table.png"
+hpTable.src = "img/hp_table.png"
 const miniHpBar = new Image()
-miniHpBar.src = "../img/miniHpBar.png"
+miniHpBar.src = "img/miniHpBar.png"
 const miniHpBarBar = new Image()
-miniHpBarBar.src = "../img/miniHpBarBar.png"
+miniHpBarBar.src = "img/miniHpBarBar.png"
 const enemyShipImg = new Image()
-enemyShipImg.src = "../img/enemyShip1.png"
+enemyShipImg.src = "img/enemyShip1.png"
 
 let leftTrigger = false
 let starGenTime = 1000
