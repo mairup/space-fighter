@@ -6,6 +6,11 @@ const starImg = document.getElementById("star")
 const rockImg = document.getElementById("asteroid")
 const hpTable = new Image()
 hpTable.src = "../img/hp_table.png"
+const miniHpBar = new Image()
+miniHpBar.src = "../img/miniHpBar.png"
+const miniHpBarBar = new Image()
+miniHpBarBar.src = "../img/miniHpBarBar.png"
+
 let leftTrigger = false
 let starGenTime = 1000
 let rockGenTime = 1000
@@ -14,7 +19,9 @@ let drawIntervalTime = 10
 let ship = {
     x: 500,
     y: 800,
-    speed: 20 //higher is lower
+    speed: 20, //higher is lower
+    hp: 1000,
+    maxHP: 1000
 }
 
 let fireSprite = {
@@ -27,8 +34,8 @@ let fireSprite = {
     totalframes: 9
 }
 
-fireSprite.img = new Image();
-fireSprite.img.src = "img/fireSprite3.png";
+fireSprite.img = new Image()
+fireSprite.img.src = "img/fireSprite3.png"
 
 let rockExplosionTemplate = {
     img: null,
@@ -92,6 +99,8 @@ function startDrawInterval() {
         for (let i = 0; i < activeRockExplosions.length; i++)
             drawRockExplosion(activeRockExplosions[i])
 
+        drawMiniHP()
+        drawHP()
     }, drawIntervalTime)
 }
 

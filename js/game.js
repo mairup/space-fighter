@@ -85,10 +85,12 @@ function drawStars() {
 }
 
 function generateRocks() {
+    let tmp = Math.random() * (rock.size / 2) + rock.size / 2
     activeRocks.push({
         speed: rock.speed,
-        size: Math.random() * (rock.size / 2) + rock.size / 2,
-        hp: rock.hp,
+        size: tmp,
+        hp: tmp * 1.7,
+        maxHP: tmp * 1.7,
         x: Math.random() * 1000,
         y: -50,
         rotation: (Math.random() * 360),
@@ -191,6 +193,7 @@ function shipColl(obj, type, i) {
         flag = true
 
     if (flag && type == "rock") {
+        ship.hp -= activeRocks[i].hp
         explodeRock(i)
     }
 }
@@ -214,5 +217,20 @@ function drawRockExplosion(explosion) {
 }
 
 function drawHP() {
+    context.drawImage(hpTable, 50, 950, 900, 30)
+    context.fillStyle = 'rgba(65, 214, 45, 0.6)'
+    if (ship.hp / ship.maxHP < 0.3) {
+        context.fillStyle = 'rgba(214, 56, 45, 0.6)'
+        canvas.style.filter = "grayscale(0.4)"
+    }
+    else
+        canvas.style.filter = ""
+    context.fillRect(70, 955, ship.hp == Math.abs(ship.hp) ? (ship.hp / ship.maxHP) * 860 : 0, 20)
+}
 
+function drawMiniHP() {
+    for (let i = 0; i < activeRocks.length; i++) {
+        context.drawImage(miniHpBar, activeRocks[i].x - activeRocks[i].size * 1.5 / 2, activeRocks[i].y - activeRocks[i].size, activeRocks[i].size * 1.5, 10)
+        context.drawImage(miniHpBarBar, activeRocks[i].x - activeRocks[i].size * 1.5 / 2, activeRocks[i].y - activeRocks[i].size, (activeRocks[i].size * 1.5) * (activeRocks[i].hp / activeRocks[i].maxHP), 10)
+    }
 }
