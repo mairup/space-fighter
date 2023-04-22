@@ -6,7 +6,14 @@ soundManager.setup({
             url: 'audio/blaster2.mp3',
             autoLoad: true,
             autoPlay: false,
-            volume: 10
+            volume: 6
+        })
+        enemyBlasterSound = soundManager.createSound({
+            id: 'enemyBlasterSound',
+            url: 'audio/blaster2.mp3',
+            autoLoad: true,
+            autoPlay: false,
+            volume: 1
         })
         explosion1Sound = soundManager.createSound({
             id: 'explosion1Sound',

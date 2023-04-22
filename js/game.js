@@ -69,9 +69,9 @@ function drawBullets() {
 function drawEnemyBullets(i) {
     for (let j = 0; j < activeEnemyBullets.length; j++) {
         context.save();
-        context.translate(activeEnemyBullets[j].x, activeEnemyBullets[j].y);
+        context.translate(activeEnemyBullets[j].x - 25, activeEnemyBullets[j].y - 25);
         context.rotate(Math.PI * activeEnemyBullets[j].rotation);
-        context.drawImage(bulletR, -75, -75, 150, 150)
+        context.drawImage(bulletR, -50, -30, 150, 150)
         context.restore();
 
         if (activeEnemyBullets[j].y > 1100)
@@ -273,6 +273,7 @@ document.addEventListener("keypress", (e) => {
 })
 
 function shipColl(obj, type, i) {
+    let bool = true
     let flag = false
     if (obj) {
         for (let y = 0; y < 40; y++)
@@ -305,10 +306,14 @@ function shipColl(obj, type, i) {
     if (flag && type == "ship") {
         ship.hp -= activeShips[i].hp
         explodeEnemyShip(i)
-        return false
+        bool = false
     }
 
-    return true
+    if (ship.hp <= 0)
+        endGame()
+
+
+    return bool
 }
 
 function animateJetSprite() {
@@ -387,7 +392,23 @@ function spawnEnemyShip() {
 
 function drawEnemyShips() {
     for (let i = 0; i < activeShips.length; i++) {
-        context.drawImage(enemyShipImg, activeShips[i].x - activeShips[i].size / 2, activeShips[i].y - activeShips[i].size / 2, activeShips[i].size, activeShips[i].size)
+        context.save()
+        context.translate(activeShips[i].x, activeShips[i].y)
+        let rotation = Math.atan((activeShips[i].y - ship.y) / (activeShips[i].x - ship.x))
+        if ((activeShips[i].x - ship.x) == Math.abs((activeShips[i].x - ship.x)))
+            rotation += Math.PI / 2
+        else rotation -= Math.PI / 2
+
+        if ((rotation / Math.PI) * 180 > 40)
+            rotation = Math.PI / 180 * 40
+
+        else if ((rotation / Math.PI) * 180 < -40)
+            rotation = Math.PI / 180 * -40
+
+        context.rotate(rotation)
+        context.drawImage(enemyShipImg, - activeShips[i].size / 2, - activeShips[i].size / 2, activeShips[i].size, activeShips[i].size)
+        context.restore()
+
         activeShips[i].y += activeShips[i].ySpeed
         if (Math.abs(activeShips[i].x - activeShips[i].originalX) > 100)
             activeShips[i].xSpeed = -activeShips[i].xSpeed
@@ -421,5 +442,9 @@ function enemyShipFire(enemyShip) {
             enemyShip.fireCD = 0
     }, enemyShip.bullet.rof)
 
-    //blasterSound.play()
+    enemyBlasterSound.play()
+}
+
+function endGame() {
+
 }

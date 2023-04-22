@@ -140,7 +140,6 @@ let enemyShips = [{
     ySpeed: 2,
     xSpeed: 2,
     hp: 300,
-    maxHP: 100,
     bullet: enemyBullets[0]
 },
 {
@@ -150,7 +149,6 @@ let enemyShips = [{
     ySpeed: 0.5,
     xSpeed: 2,
     hp: 300,
-    maxHP: 300,
     bullet: enemyBullets[1]
 },
 {
@@ -160,7 +158,6 @@ let enemyShips = [{
     ySpeed: 0.5,
     xSpeed: 2,
     hp: 50,
-    maxHP: 50,
     bullet: enemyBullets[2]
 }
 ]
@@ -186,9 +183,6 @@ function startDrawInterval() {
         for (let i = 0; i < activeRocks.length; i++)
             shipColl(activeRocks[i], "rock", i)
 
-        for (let i = 0; i < activeEnemyBulletsExplosions.length; i++)
-            drawBulletExplosion(activeEnemyBulletsExplosions[i], -1)
-
         for (let i = 0; i < activeShips.length; i++) {
             if (shipColl(activeShips[i], "ship", i) && activeShips[i].fireCD == 0) enemyShipFire(activeShips[i])
 
@@ -198,13 +192,17 @@ function startDrawInterval() {
             drawRockExplosion(activeRockExplosions[i])
 
         for (let i = 0; i < activeBulletExplosions.length; i++)
-            drawBulletExplosion(activeBulletExplosions[i])
+            drawBulletExplosion(activeBulletExplosions[i], 1)
 
 
 
         for (let i = 0; i < activeShipExplosions.length; i++) {
             drawShipExplosion(activeShipExplosions[i])
         }
+
+
+        for (let i = 0; i < activeEnemyBulletsExplosions.length; i++)
+            drawBulletExplosion(activeEnemyBulletsExplosions[i], -1)
 
         for (let i = 0; i < activeEnemyBullets.length; i++) {
             activeEnemyBullets[i].y += activeEnemyBullets[i].speed
@@ -249,7 +247,11 @@ function startIncreaseDifficultyInterval() {
     increaseDifficultyInterval = setTimeout(() => {
         if (rockGenTime > 200)
             rockGenTime -= 50
-        else rockGenTime -= rockGenTime / 20
+        else
+            rockGenTime -= rockGenTime / 20
+        enemyBullets.dmg *= 1.1
+        enemyBullets.rof -= enemyBullets / 20
+        ship.hp + 30 > ship.maxHP ? ship.hp = ship.maxHP : ship.hp += 30
         startIncreaseDifficultyInterval()
     }, 5000)
 }
