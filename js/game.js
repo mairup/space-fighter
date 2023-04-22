@@ -66,6 +66,19 @@ function drawBullets() {
     }
 }
 
+function drawEnemyBullets(i) {
+    for (let j = 0; j < activeEnemyBullets.length; j++) {
+        context.save();
+        context.translate(activeEnemyBullets[j].x, activeEnemyBullets[j].y);
+        context.rotate(Math.PI * activeEnemyBullets[j].rotation);
+        context.drawImage(bulletR, -75, -75, 150, 150)
+        context.restore();
+
+        if (activeEnemyBullets[j].y > 1100)
+            activeEnemyBullets.splice(j, 1)
+    }
+}
+
 function generateStars() {
     activeStars.push({
         speed: star.speed,
@@ -134,7 +147,7 @@ function rockBulletColl() {
                     activeRocks[i].hp -= activeBullets[j].dmg
                     if (activeRocks[i].hp <= 0)
                         explodeRock(i)
-                    activeBullets.splice(j, 1)
+                    explodeBullet(j)
                 }
 }
 
@@ -145,22 +158,40 @@ function enemyShipBulletColl() {
                 if (checkDistance(activeShips[i], activeBullets[j]) < (activeShips[i].size / 2 + activeBullets[j].size)) {
                     activeShips[i].hp -= activeBullets[j].dmg
                     if (activeShips[i].hp <= 0)
-                        activeShips.splice(i, 1)
-                    activeBullets.splice(j, 1)
+                        explodeEnemyShip(i)
+                    explodeBullet(j)
                 }
         }
 
 }
 
 function explodeBullet(i) {
+    let explosion = { ...bulletExplosionTemplate }
+    explosion.x = activeBullets[i].x
+    explosion.y = activeBullets[i].y
+    explosion.img = new Image()
+    explosion.img.src = "img/explosion.png"
+    explosion.size = activeBullets[i].size
 
+    activeBullets.splice(i, 1)
+
+    activeBulletExplosions.push(explosion)
+    let int = setInterval(() => {
+        explosion.currentframe++
+        if (explosion.currentframe >= explosion.totalframes) {
+            clearInterval(int)
+            activeBulletExplosions.splice(i, 1)
+        }
+    }, 30);
+
+    explosion2Sound.play()
 }
 
 function explodeRock(i) {
     let explosion = { ...rockExplosionTemplate }
     explosion.x = activeRocks[i].x
     explosion.y = activeRocks[i].y
-    explosion.img = new Image();
+    explosion.img = new Image()
     explosion.img.src = "img/AsteroidExplode.png"
     explosion.rotation = activeRocks[i].rotation
     explosion.size = activeRocks[i].size
@@ -179,8 +210,27 @@ function explodeRock(i) {
     explosion1Sound.play()
 }
 
-function explodeShip(i) {
+function explodeEnemyShip(i) {
+    let explosion = { ...shipExplosionTemplate }
+    explosion.x = activeShips[i].x
+    explosion.y = activeShips[i].y
+    explosion.img = new Image()
+    explosion.img.src = "img/explosion.png"
+    explosion.rotation = activeShips[i].rotation
+    explosion.size = activeShips[i].size - activeShips[i].size / 3
+
     activeShips.splice(i, 1)
+
+    activeShipExplosions.push(explosion)
+    let int = setInterval(() => {
+        explosion.currentframe++
+        if (explosion.currentframe >= explosion.totalframes) {
+            clearInterval(int)
+            activeShipExplosions.splice(i, 1)
+        }
+    }, 40);
+
+    explosion3Sound.play()
 }
 
 function checkDistance(obj1, obj2) {
@@ -223,7 +273,7 @@ function shipColl(obj, type, i) {
 
     if (flag && type == "ship") {
         ship.hp -= activeShips[i].hp
-        explodeShip(i)
+        explodeEnemyShip(i)
     }
 }
 
@@ -242,6 +292,22 @@ function drawRockExplosion(explosion) {
     context.rotate(Math.PI / 180 * - explosion.rotation)
     //context.drawImage(explosion.img, -explosion.size * 1.6, -explosion.size * 1.6, explosion.size * 3.2, explosion.size * 3.2,)
     context.drawImage(explosion.img, explosion.currentframe * explosion.width, 0, explosion.width, explosion.height, -explosion.size * 1.6, -explosion.size * 1.6, explosion.size * 3.2, explosion.size * 3.2)
+    context.restore()
+}
+
+function drawBulletExplosion(explosion) {
+    explosion.y -= explosion.currentframe * 1
+    context.save()
+    context.translate(explosion.x, explosion.y)
+    context.drawImage(explosion.img, explosion.currentframe * explosion.width, 0, explosion.width, explosion.height, -explosion.size * 1.6, -explosion.size * 1.6, explosion.size * 3.2, explosion.size * 3.2)
+    context.restore()
+}
+
+function drawShipExplosion(explosion) {
+    explosion.y += (explosion.currentframe * 1) / 3
+    context.save()
+    context.translate(explosion.x, explosion.y)
+    context.drawImage(explosion.img, explosion.currentframe * explosion.width, 0, explosion.width, explosion.height, -explosion.size, -explosion.size, explosion.size * 2, explosion.size * 2)
     context.restore()
 }
 
@@ -279,7 +345,9 @@ function spawnEnemyShip() {
         ySpeed: enemyShips[0].ySpeed,
         hp: enemyShips[0].hp,
         maxHP: enemyShips[0].hp,
-        bullet: enemyBullets[0]
+        bullet: enemyBullets[0],
+        activeBullets: [],
+        fireCD: 0
     })
 }
 
@@ -298,4 +366,26 @@ function drawEnemyShips() {
         context.fill();
         context.closePath();*/
     }
+}
+
+function enemyShipFire(i) {
+    let speedX = (ship.x - activeShips[i].x) * 7 / (Math.abs(activeShips[i].y - ship.y))
+    if (speedX > 5) speedX = 5
+    else if (speedX < -5) speedX = -5
+
+    activeEnemyBullets.push({
+        speed: activeShips[i].bullet.speed,
+        size: activeShips[i].bullet.size,
+        dmg: activeShips[i].bullet.dmg,
+        x: activeShips[i].x,
+        y: activeShips[i].y + 30,
+        speedX: speedX,
+        rotation: -Math.sin(speedX / 20)
+    })
+    activeShips[i].fireCD = setTimeout(() => {
+        if (activeShips[i])
+            activeShips[i].fireCD = 0
+    }, activeShips[i].bullet.rof)
+
+    //blasterSound.play()
 }

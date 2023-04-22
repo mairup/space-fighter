@@ -12,6 +12,8 @@ const miniHpBarBar = new Image()
 miniHpBarBar.src = "img/miniHpBarBar.png"
 const enemyShipImg = new Image()
 enemyShipImg.src = "img/enemyShip1.png"
+const bulletR = new Image()
+bulletR.src = "img/bulletR.png"
 
 let leftTrigger = false
 let starGenTime = 1000
@@ -52,7 +54,35 @@ let rockExplosionTemplate = {
 rockExplosionTemplate.img = new Image()
 rockExplosionTemplate.img.src = "img/AsteroidExplode.png"
 
+let bulletExplosionTemplate = {
+    img: null,
+    x: 100,
+    y: 100,
+    width: 32,
+    height: 32,
+    currentframe: 0,
+    totalframes: 8
+}
+
+bulletExplosionTemplate.img = new Image()
+bulletExplosionTemplate.img.src = "img/explosion.png"
+
+let shipExplosionTemplate = {
+    img: null,
+    x: 100,
+    y: 100,
+    width: 32,
+    height: 32,
+    currentframe: 0,
+    totalframes: 8
+}
+
+shipExplosionTemplate.img = new Image()
+shipExplosionTemplate.img.src = "img/explosion.png"
+
 let activeRockExplosions = []
+let activeBulletExplosions = []
+let activeShipExplosions = []
 
 let bullet = {
     speed: 10,
@@ -76,6 +106,7 @@ let activeBullets = []
 let activeStars = []
 let activeRocks = []
 let activeShips = []
+let activeEnemyBullets = []
 
 let mousePos = {
     x: 500,
@@ -83,8 +114,8 @@ let mousePos = {
 }
 
 let enemyBullets = [{
-    speed: 5,
-    rof: 250, //higher is lower
+    speed: 7,
+    rof: 1000, //higher is lower
     size: 5,
     dmg: 50
 },
@@ -154,11 +185,28 @@ function startDrawInterval() {
         for (let i = 0; i < activeRocks.length; i++)
             shipColl(activeRocks[i], "rock", i)
 
-        for (let i = 0; i < activeShips.length; i++)
+        for (let i = 0; i < activeShips.length; i++) {
+            if (activeShips[i].fireCD == 0) enemyShipFire(i)
             shipColl(activeShips[i], "ship", i)
+        }
+
+
+
+        for (let i = 0; i < activeEnemyBullets.length; i++) {
+            activeEnemyBullets[i].y += activeEnemyBullets[i].speed
+            activeEnemyBullets[i].x += activeEnemyBullets[i].speedX
+            drawEnemyBullets(i)
+        }
 
         for (let i = 0; i < activeRockExplosions.length; i++)
             drawRockExplosion(activeRockExplosions[i])
+
+        for (let i = 0; i < activeBulletExplosions.length; i++)
+            drawBulletExplosion(activeBulletExplosions[i])
+
+        for (let i = 0; i < activeShipExplosions.length; i++) {
+            drawShipExplosion(activeShipExplosions[i])
+        }
 
         drawMiniHP()
         drawHP()
@@ -194,11 +242,9 @@ function startEnemyShipInterval() {
 let increaseDifficultyInterval
 function startIncreaseDifficultyInterval() {
     increaseDifficultyInterval = setTimeout(() => {
-        console.log(rockGenTime);
         if (rockGenTime > 200)
             rockGenTime -= 50
         else rockGenTime -= rockGenTime / 20
-        console.log(rockGenTime);
         startIncreaseDifficultyInterval()
     }, 5000)
 }
