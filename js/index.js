@@ -83,6 +83,7 @@ shipExplosionTemplate.img.src = "img/explosion.png"
 let activeRockExplosions = []
 let activeBulletExplosions = []
 let activeShipExplosions = []
+let activeEnemyBulletsExplosions = []
 
 let bullet = {
     speed: 10,
@@ -185,17 +186,12 @@ function startDrawInterval() {
         for (let i = 0; i < activeRocks.length; i++)
             shipColl(activeRocks[i], "rock", i)
 
+        for (let i = 0; i < activeEnemyBulletsExplosions.length; i++)
+            drawBulletExplosion(activeEnemyBulletsExplosions[i], -1)
+
         for (let i = 0; i < activeShips.length; i++) {
-            if (activeShips[i].fireCD == 0) enemyShipFire(i)
-            shipColl(activeShips[i], "ship", i)
-        }
+            if (shipColl(activeShips[i], "ship", i) && activeShips[i].fireCD == 0) enemyShipFire(activeShips[i])
 
-
-
-        for (let i = 0; i < activeEnemyBullets.length; i++) {
-            activeEnemyBullets[i].y += activeEnemyBullets[i].speed
-            activeEnemyBullets[i].x += activeEnemyBullets[i].speedX
-            drawEnemyBullets(i)
         }
 
         for (let i = 0; i < activeRockExplosions.length; i++)
@@ -204,8 +200,17 @@ function startDrawInterval() {
         for (let i = 0; i < activeBulletExplosions.length; i++)
             drawBulletExplosion(activeBulletExplosions[i])
 
+
+
         for (let i = 0; i < activeShipExplosions.length; i++) {
             drawShipExplosion(activeShipExplosions[i])
+        }
+
+        for (let i = 0; i < activeEnemyBullets.length; i++) {
+            activeEnemyBullets[i].y += activeEnemyBullets[i].speed
+            activeEnemyBullets[i].x += activeEnemyBullets[i].speedX
+            drawEnemyBullets(i)
+            shipColl(activeEnemyBullets[i], "bullet", i)
         }
 
         drawMiniHP()

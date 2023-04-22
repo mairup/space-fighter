@@ -182,7 +182,29 @@ function explodeBullet(i) {
             clearInterval(int)
             activeBulletExplosions.splice(i, 1)
         }
-    }, 30);
+    }, 30)
+
+    explosion2Sound.play()
+}
+
+function explodeEnemyBullet(i) {
+    let explosion = { ...bulletExplosionTemplate }
+    explosion.x = activeEnemyBullets[i].x
+    explosion.y = activeEnemyBullets[i].y
+    explosion.img = new Image()
+    explosion.img.src = "img/explosion.png"
+    explosion.size = activeEnemyBullets[i].size
+
+    activeEnemyBullets.splice(i, 1)
+
+    activeEnemyBulletsExplosions.push(explosion)
+    let int = setInterval(() => {
+        explosion.currentframe++
+        if (explosion.currentframe >= explosion.totalframes) {
+            clearInterval(int)
+            activeEnemyBulletsExplosions.splice(i, 1)
+        }
+    }, 30)
 
     explosion2Sound.play()
 }
@@ -205,7 +227,7 @@ function explodeRock(i) {
             clearInterval(int)
             activeRockExplosions.splice(i, 1)
         }
-    }, 40);
+    }, 40)
 
     explosion1Sound.play()
 }
@@ -234,7 +256,8 @@ function explodeEnemyShip(i) {
 }
 
 function checkDistance(obj1, obj2) {
-    return (Math.sqrt(Math.abs((obj1.x - obj2.x) * (obj1.x - obj2.x) + ((obj1.y - obj2.y) * (obj1.y - obj2.y)))))
+    if (obj1 && obj2)
+        return (Math.sqrt(Math.abs((obj1.x - obj2.x) * (obj1.x - obj2.x) + ((obj1.y - obj2.y) * (obj1.y - obj2.y)))))
 }
 
 function togglePause() {
@@ -251,30 +274,41 @@ document.addEventListener("keypress", (e) => {
 
 function shipColl(obj, type, i) {
     let flag = false
-    for (let y = 0; y < 40; y++)
-        if (checkDistance(obj, { x: ship.x, y: ship.y - 70 + y }) < 5 + obj.size / 2)
+    if (obj) {
+        for (let y = 0; y < 40; y++)
+            if (checkDistance(obj, { x: ship.x, y: ship.y - 70 + y }) < 5 + obj.size / 2)
+                flag = true
+        for (let y = 0; y < 40; y++)
+            if (checkDistance(obj, { x: ship.x, y: ship.y - 20 + y }) < 20 + obj.size / 2)
+                flag = true
+        if (checkDistance(obj, { x: ship.x, y: ship.y + 40 }) < 40 + obj.size / 2)
             flag = true
-    for (let y = 0; y < 40; y++)
-        if (checkDistance(obj, { x: ship.x, y: ship.y - 20 + y }) < 20 + obj.size / 2)
+        if (checkDistance(obj, { x: ship.x + 50, y: ship.y + 55 }) < 15 + obj.size / 2 || checkDistance(obj, { x: ship.x - 50, y: ship.y + 55 }) < 15 + obj.size / 2)
             flag = true
-    if (checkDistance(obj, { x: ship.x, y: ship.y + 40 }) < 40 + obj.size / 2)
-        flag = true
-    if (checkDistance(obj, { x: ship.x + 50, y: ship.y + 55 }) < 15 + obj.size / 2 || checkDistance(obj, { x: ship.x - 50, y: ship.y + 55 }) < 15 + obj.size / 2)
-        flag = true
-    else if (checkDistance(obj, { x: ship.x + 68, y: ship.y + 55 }) < 10 + obj.size / 2 || checkDistance(obj, { x: ship.x - 68, y: ship.y + 55 }) < 10 + obj.size / 2)
-        flag = true
-    else if (checkDistance(obj, { x: ship.x + 68, y: ship.y + 40 }) < 10 + obj.size / 2 || checkDistance(obj, { x: ship.x - 68, y: ship.y + 40 }) < 10 + obj.size / 2)
-        flag = true
+        else if (checkDistance(obj, { x: ship.x + 68, y: ship.y + 55 }) < 10 + obj.size / 2 || checkDistance(obj, { x: ship.x - 68, y: ship.y + 55 }) < 10 + obj.size / 2)
+            flag = true
+        else if (checkDistance(obj, { x: ship.x + 68, y: ship.y + 40 }) < 10 + obj.size / 2 || checkDistance(obj, { x: ship.x - 68, y: ship.y + 40 }) < 10 + obj.size / 2)
+            flag = true
+    }
+
 
     if (flag && type == "rock") {
         ship.hp -= activeRocks[i].hp
         explodeRock(i)
     }
 
+    if (flag && type == "bullet") {
+        ship.hp -= activeEnemyBullets[i].dmg
+        explodeEnemyBullet(i)
+    }
+
     if (flag && type == "ship") {
         ship.hp -= activeShips[i].hp
         explodeEnemyShip(i)
+        return false
     }
+
+    return true
 }
 
 function animateJetSprite() {
@@ -295,8 +329,8 @@ function drawRockExplosion(explosion) {
     context.restore()
 }
 
-function drawBulletExplosion(explosion) {
-    explosion.y -= explosion.currentframe * 1
+function drawBulletExplosion(explosion, flag) {
+    explosion.y -= explosion.currentframe * 1 * flag
     context.save()
     context.translate(explosion.x, explosion.y)
     context.drawImage(explosion.img, explosion.currentframe * explosion.width, 0, explosion.width, explosion.height, -explosion.size * 1.6, -explosion.size * 1.6, explosion.size * 3.2, explosion.size * 3.2)
@@ -368,24 +402,24 @@ function drawEnemyShips() {
     }
 }
 
-function enemyShipFire(i) {
-    let speedX = (ship.x - activeShips[i].x) * 7 / (Math.abs(activeShips[i].y - ship.y))
+function enemyShipFire(enemyShip) {
+    let speedX = (ship.x - enemyShip.x) * 7 / (Math.abs(enemyShip.y - ship.y))
     if (speedX > 5) speedX = 5
     else if (speedX < -5) speedX = -5
 
     activeEnemyBullets.push({
-        speed: activeShips[i].bullet.speed,
-        size: activeShips[i].bullet.size,
-        dmg: activeShips[i].bullet.dmg,
-        x: activeShips[i].x,
-        y: activeShips[i].y + 30,
+        speed: enemyShip.bullet.speed,
+        size: enemyShip.bullet.size,
+        dmg: enemyShip.bullet.dmg,
+        x: enemyShip.x,
+        y: enemyShip.y + 30,
         speedX: speedX,
         rotation: -Math.sin(speedX / 20)
     })
-    activeShips[i].fireCD = setTimeout(() => {
-        if (activeShips[i])
-            activeShips[i].fireCD = 0
-    }, activeShips[i].bullet.rof)
+    enemyShip.fireCD = setTimeout(() => {
+        if (enemyShip)
+            enemyShip.fireCD = 0
+    }, enemyShip.bullet.rof)
 
     //blasterSound.play()
 }
