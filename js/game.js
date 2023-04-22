@@ -205,12 +205,14 @@ function animateJetSprite() {
 
 
 function drawRockExplosion(explosion) {
-
     context.save()
     context.translate(explosion.x, explosion.y)
     context.rotate(Math.PI / 180 * - explosion.rotation)
     //context.drawImage(explosion.img, -explosion.size * 1.6, -explosion.size * 1.6, explosion.size * 3.2, explosion.size * 3.2,)
     context.drawImage(explosion.img, explosion.currentframe * explosion.width, 0, explosion.width, explosion.height, -explosion.size * 1.6, -explosion.size * 1.6, explosion.size * 3.2, explosion.size * 3.2)
-
     context.restore()
+}
+
+function drawHP() {
+
 }

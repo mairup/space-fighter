@@ -4,6 +4,8 @@ const shipImg = document.getElementById("ship")
 const bulletB = document.getElementById("bulletB")
 const starImg = document.getElementById("star")
 const rockImg = document.getElementById("asteroid")
+const hpTable = new Image()
+hpTable.src = "../img/hp_table.png"
 let leftTrigger = false
 let starGenTime = 1000
 let rockGenTime = 1000
@@ -12,7 +14,7 @@ let drawIntervalTime = 10
 let ship = {
     x: 500,
     y: 800,
-    speed: 50 //higher is lower
+    speed: 20 //higher is lower
 }
 
 let fireSprite = {
@@ -45,7 +47,7 @@ let activeRockExplosions = []
 
 let bullet = {
     speed: 10,
-    rof: 300, //higher is lower
+    rof: 250, //higher is lower
     size: 10,
     dmg: 100
 }
@@ -53,6 +55,12 @@ let bullet = {
 let star = {
     speed: 1,
     size: 40
+}
+
+let rock = {
+    speed: 5,
+    size: 100,
+    hp: 200
 }
 
 let activeBullets = []
@@ -118,8 +126,3 @@ function clearIntervals() {
     rockInterval = null
 }
 
-let rock = {
-    speed: 2,
-    size: 100,
-    hp: 100
-}

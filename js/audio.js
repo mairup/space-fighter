@@ -14,19 +14,8 @@ soundManager.setup({
             url: 'audio/explosion1.mp3',
             autoLoad: true,
             autoPlay: false,
-            volume: 20
-        })/*
-        backAudio = soundManager.createSound({
-            id: 'backAudioSound',
-            url: 'audio/ScifiAmbient.wav',
-            autoLoad: true,
-            autoPlay: true,
-            onload: function () {
-                console.log('The sound ' + this.id + ' loaded!');
-            },
-            loops: 999,
-            volume: 50
-        })*/
+            volume: 25
+        })
     }
 })
 
