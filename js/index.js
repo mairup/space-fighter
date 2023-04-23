@@ -14,11 +14,14 @@ const enemyShipImg = new Image()
 enemyShipImg.src = "img/enemyShip1.png"
 const bulletR = new Image()
 bulletR.src = "img/bulletR.png"
+const healthPackImg = new Image()
+healthPackImg.src = "img/healthPack.png"
 
 let leftTrigger = false
 let starGenTime = 1000
 let rockGenTime = 1000
 let drawIntervalTime = 10
+let healthPackTimeout = 10000
 
 let ship = {
     x: 500,
@@ -108,6 +111,7 @@ let activeStars = []
 let activeRocks = []
 let activeShips = []
 let activeEnemyBullets = []
+let activeHealthPacks = []
 
 let mousePos = {
     x: 500,
@@ -139,7 +143,7 @@ let enemyShips = [{
     y: 0,
     ySpeed: 2,
     xSpeed: 2,
-    hp: 300,
+    hp: 350,
     bullet: enemyBullets[0]
 },
 {
@@ -179,14 +183,16 @@ function startDrawInterval() {
         drawRocks()
         rockBulletColl()
         enemyShipBulletColl()
+        drawHealthPacks()
 
         for (let i = 0; i < activeRocks.length; i++)
             shipColl(activeRocks[i], "rock", i)
 
-        for (let i = 0; i < activeShips.length; i++) {
+        for (let i = 0; i < activeShips.length; i++)
             if (shipColl(activeShips[i], "ship", i) && activeShips[i].fireCD == 0) enemyShipFire(activeShips[i])
 
-        }
+        for (let i = 0; i < activeHealthPacks.length; i++)
+            shipColl(activeHealthPacks[i], "healthPack", i)
 
         for (let i = 0; i < activeRockExplosions.length; i++)
             drawRockExplosion(activeRockExplosions[i])
@@ -194,12 +200,9 @@ function startDrawInterval() {
         for (let i = 0; i < activeBulletExplosions.length; i++)
             drawBulletExplosion(activeBulletExplosions[i], 1)
 
-
-
         for (let i = 0; i < activeShipExplosions.length; i++) {
             drawShipExplosion(activeShipExplosions[i])
         }
-
 
         for (let i = 0; i < activeEnemyBulletsExplosions.length; i++)
             drawBulletExplosion(activeEnemyBulletsExplosions[i], -1)
@@ -246,14 +249,26 @@ let increaseDifficultyInterval
 function startIncreaseDifficultyInterval() {
     increaseDifficultyInterval = setTimeout(() => {
         if (rockGenTime > 200)
-            rockGenTime -= 50
+            rockGenTime -= 40
         else
-            rockGenTime -= rockGenTime / 20
-        enemyBullets.dmg *= 1.1
-        enemyBullets.rof -= enemyBullets / 20
-        ship.hp + 30 > ship.maxHP ? ship.hp = ship.maxHP : ship.hp += 30
+            rockGenTime -= rockGenTime / 50
+        enemyBullets[0].dmg *= 1.1
+        enemyBullets[0].rof -= enemyBullets[0].rof / 30
+        enemyShips[0].hp *= 1.12
+        ship.maxHP *= 1.1
+        ship.hp = (ship.hp / (ship.maxHP / 1.1)) * ship.maxHP
+        bullet.dmg += Math.random() * 10 + 5
+        bullet.rof -= bullet.rof / 70
         startIncreaseDifficultyInterval()
-    }, 5000)
+    }, 7000)
+}
+
+let healthPackInterval
+function startHealthPackInterval() {
+    healthPackInterval = setTimeout(() => {
+        spawnHealthPack()
+        startHealthPackInterval()
+    }, (Math.random() * (healthPackTimeout / 2)) + healthPackTimeout)
 }
 
 function startIntervals() {
@@ -262,6 +277,7 @@ function startIntervals() {
     startRockInterval()
     startEnemyShipInterval()
     startIncreaseDifficultyInterval()
+    startHealthPackInterval()
 }
 
 startIntervals()
@@ -272,9 +288,11 @@ function clearIntervals() {
     clearTimeout(rockInterval)
     clearTimeout(enemyShipInterval)
     clearTimeout(increaseDifficultyInterval)
+    clearTimeout(healthPackInterval)
     drawInterval = null
     starInterval = null
     rockInterval = null
     enemyShipInterval = null
     increaseDifficultyInterval = null
+    healthPackInterval = null
 }

@@ -309,6 +309,9 @@ function shipColl(obj, type, i) {
         bool = false
     }
 
+    if (flag && type == "healthPack")
+        pickupHealthPack(obj, i)
+
     if (ship.hp <= 0)
         endGame()
 
@@ -443,6 +446,32 @@ function enemyShipFire(enemyShip) {
     }, enemyShip.bullet.rof)
 
     enemyBlasterSound.play()
+}
+
+function spawnHealthPack() {
+    activeHealthPacks.push({
+        hp: ship.maxHP / 3,
+        x: Math.random() * 950 + 25,
+        y: -50,
+        size: 50
+    })
+}
+
+function drawHealthPacks() {
+    for (let i = 0; i < activeHealthPacks.length; i++) {
+        context.drawImage(healthPackImg, activeHealthPacks[i].x - activeHealthPacks[i].size / 2, activeHealthPacks[i].y - activeHealthPacks[i].size / 2, activeHealthPacks[i].size, activeHealthPacks[i].size);
+        activeHealthPacks[i].y += 1
+    }
+}
+
+function pickupHealthPack(pack, i) {
+    if (ship.hp + pack.hp > ship.maxHP)
+        ship.hp = ship.maxHP
+    else
+        ship.hp += pack.hp
+
+    activeHealthPacks.splice(i, 1)
+    healSound.play()
 }
 
 function endGame() {
