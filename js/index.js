@@ -26,6 +26,7 @@ let starGenTime
 let rockGenTime
 let drawIntervalTime
 let healthPackTimeout
+let timeSurvivedTimeout
 
 let ship = {
     isDead: true
@@ -108,10 +109,7 @@ let activeShips = []
 let activeEnemyBullets = []
 let activeHealthPacks = []
 
-let mousePos = {
-    x: 500,
-    y: 800
-}
+let mousePos = {}
 
 let enemyBullets = []
 
@@ -130,6 +128,7 @@ function startDrawInterval() {
             animateJetSprite()
         }
 
+        drawHealthPacks()
         drawEnemyShips()
         moveShip()
         if (leftTrigger && gunCD == 0 && ship.stamina > bullet.stamCost) fire()
@@ -137,7 +136,6 @@ function startDrawInterval() {
         drawRocks()
         rockBulletColl()
         enemyShipBulletColl()
-        drawHealthPacks()
 
         for (let i = 0; i < activeRocks.length; i++)
             if (shipColl(activeRocks[i], "rock", i) === "break") {
@@ -145,7 +143,7 @@ function startDrawInterval() {
                 setTimeout(() => {
                     endGame()
                     return
-                }, 500);
+                }, 1000);
             }
 
         for (let i = 0; i < activeShips.length; i++) {
@@ -160,7 +158,7 @@ function startDrawInterval() {
                 setTimeout(() => {
                     endGame()
                     return
-                }, 500);
+                }, 1000);
             }
 
 
@@ -186,7 +184,7 @@ function startDrawInterval() {
                 setTimeout(() => {
                     endGame()
                     return
-                }, 500);
+                }, 1000);
             }
         }
 
@@ -223,6 +221,13 @@ function startEnemyShipInterval() {
     }, (Math.random() * (enemyShipsTimeout / 2)) + enemyShipsTimeout)
 }
 
+function startTimeInterval() {
+    timeSurvivedTimeout = setTimeout(() => {
+        timeSurvived += 0.1
+        startTimeInterval()
+    }, 100)
+}
+
 
 let increaseDifficultyInterval
 function startIncreaseDifficultyInterval() {
@@ -240,6 +245,7 @@ function startIncreaseDifficultyInterval() {
         ship.stamina = (ship.stamina / (ship.maxStamina / 1.02)) * ship.maxStamina
         bullet.dmg += Math.random() * 10 + 5
         bullet.rof -= bullet.rof / 70
+        rock.size *= 1.02
         startIncreaseDifficultyInterval()
     }, 7000)
 }
@@ -259,6 +265,7 @@ function startIntervals() {
     startEnemyShipInterval()
     startIncreaseDifficultyInterval()
     startHealthPackInterval()
+    startTimeInterval()
 }
 
 
@@ -269,10 +276,12 @@ function clearIntervals() {
     clearTimeout(enemyShipInterval)
     clearTimeout(increaseDifficultyInterval)
     clearTimeout(healthPackInterval)
+    clearTimeout(timeSurvivedTimeout)
     drawInterval = null
     starInterval = null
     rockInterval = null
     enemyShipInterval = null
     increaseDifficultyInterval = null
     healthPackInterval = null
+    timeSurvivedTimeout = null
 }

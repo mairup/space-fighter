@@ -3,6 +3,8 @@ const context = canvas.getContext("2d")
 const menuScreen = document.getElementById("menu-screen")
 const timeSurvivedDiv = document.getElementById("timeSurvived")
 const mainTitleDiv = document.getElementById("main-title")
+const startButton = document.getElementById("start-button")
+const resumeButton = document.getElementById("resume-button")
 menuScreen.style.fontSize = (canvas.width / 10) + "px"
 document.getElementById("buttons-container").style.fontSize = (canvas.width / 30) + "px"
 timeSurvivedDiv.style.fontSize = (canvas.width / 30) + "px"
@@ -13,13 +15,20 @@ canvas.style.zIndex = 0
 menuScreen.style.zIndex = 1
 
 function endGame() {
-    mainTitleDiv.innerText = "GAME OVER"
     togglePause()
 }
 
 function togglePause() {
-    if (ship.isDead)
+    startButton.innerText = "RESTART"
+    resumeButton.style.display = "flex"
+    timeSurvivedDiv.innerText = "Time survived: " + Math.floor(timeSurvived) + " seconds"
+    timeSurvivedDiv.style.opacity = 1
+    if (ship.isDead) {
         restartGame()
+        mainTitleDiv.innerText = "GAME OVER"
+        resumeButton.style.display = "none"
+    }
+    else mainTitleDiv.innerText = "SPACE FIGHTER"
     if (drawInterval === null) {
         startIntervals()
         hideMenu()
@@ -42,9 +51,15 @@ function showMenu() {
 }
 
 function restartGame() {
+
+    mousePos = {
+        x: 500,
+        y: 700
+    }
+
     ship = {
         x: 500,
-        y: 800,
+        y: 700,
         speed: 20,
         hp: 700,
         maxHP: 700,
@@ -121,4 +136,14 @@ function restartGame() {
     rockGenTime = 1000
     drawIntervalTime = 10
     healthPackTimeout = 15000
+    timeSurvivedTimeout = 1000
 }
+
+startButton.addEventListener("click", () => {
+    restartGame()
+    togglePause()
+})
+
+resumeButton.addEventListener("click", () => {
+    togglePause()
+})

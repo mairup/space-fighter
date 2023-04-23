@@ -266,6 +266,9 @@ function checkDistance(obj1, obj2) {
 document.addEventListener("keypress", (e) => {
     if (e.key == "p" || e.key == "P")
         togglePause()
+    if (e.key == "f" || e.key == "F")
+        document.body.requestFullscreen()
+
 })
 
 function shipColl(obj, type, i) {
