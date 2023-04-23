@@ -1,5 +1,7 @@
 function drawShip() {
+    context.drawImage(blueGlowImg, ship.x - 63, ship.y - 20, 130, 130)
     context.drawImage(shipImg, ship.x - 75, ship.y - 75, 150, 150)
+
     /*
         context.beginPath()
         context.fillStyle = 'rgb(255,100,50,0.5)'
@@ -43,6 +45,7 @@ function moveShip() {
 }
 
 function fire() {
+    ship.stamina -= bullet.stamCost
     activeBullets.push({
         speed: bullet.speed,
         size: bullet.size,
@@ -394,6 +397,9 @@ function spawnEnemyShip() {
 }
 
 function drawEnemyShips() {
+    for (let i = 0; i < activeShips.length; i++)
+        if (activeShips[i].y > 1000 + enemyShips[0].size)
+            activeShips.splice(i, 1)
     for (let i = 0; i < activeShips.length; i++) {
         context.save()
         context.translate(activeShips[i].x, activeShips[i].y)
@@ -409,6 +415,7 @@ function drawEnemyShips() {
             rotation = Math.PI / 180 * -40
 
         context.rotate(rotation)
+        context.drawImage(redGlowImg, - activeShips[i].size / 1.6, - activeShips[i].size / 1.4, activeShips[i].size * 1.3, activeShips[i].size * 1.3)
         context.drawImage(enemyShipImg, - activeShips[i].size / 2, - activeShips[i].size / 2, activeShips[i].size, activeShips[i].size)
         context.restore()
 
@@ -459,19 +466,34 @@ function spawnHealthPack() {
 
 function drawHealthPacks() {
     for (let i = 0; i < activeHealthPacks.length; i++) {
-        context.drawImage(healthPackImg, activeHealthPacks[i].x - activeHealthPacks[i].size / 2, activeHealthPacks[i].y - activeHealthPacks[i].size / 2, activeHealthPacks[i].size, activeHealthPacks[i].size);
+        context.drawImage(whiteGlowImg, activeHealthPacks[i].x - activeHealthPacks[i].size - 5, activeHealthPacks[i].y - activeHealthPacks[i].size, activeHealthPacks[i].size * 2.2, activeHealthPacks[i].size * 2.2)
+        context.drawImage(healthPackImg, activeHealthPacks[i].x - activeHealthPacks[i].size / 2, activeHealthPacks[i].y - activeHealthPacks[i].size / 2, activeHealthPacks[i].size, activeHealthPacks[i].size)
+
         activeHealthPacks[i].y += 1
     }
 }
 
 function pickupHealthPack(pack, i) {
-    if (ship.hp + pack.hp > ship.maxHP)
-        ship.hp = ship.maxHP
-    else
-        ship.hp += pack.hp
+    if (ship.hp != ship.maxHP) {
+        if (ship.hp + pack.hp > ship.maxHP)
+            ship.hp = ship.maxHP
+        else
+            ship.hp += pack.hp
 
-    activeHealthPacks.splice(i, 1)
-    healSound.play()
+        activeHealthPacks.splice(i, 1)
+        healSound.play()
+    }
+
+}
+
+function drawStamina() {
+    context.drawImage(hpTable, 50, 900, 900, 30)
+    context.fillStyle = 'rgba(28, 207, 252, 0.6)'
+
+    if (ship.stamina / ship.maxStamina < 0.3)
+        context.fillStyle = 'rgba(18, 125, 151, 0.6)'
+
+    context.fillRect(70, 905, ship.stamina == Math.abs(ship.stamina) ? (ship.stamina / ship.maxStamina) * 860 : 0, 20)
 }
 
 function endGame() {

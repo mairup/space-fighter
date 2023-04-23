@@ -16,19 +16,27 @@ const bulletR = new Image()
 bulletR.src = "img/bulletR.png"
 const healthPackImg = new Image()
 healthPackImg.src = "img/healthPack.png"
+const blueGlowImg = new Image()
+blueGlowImg.src = "img/blueGlow.png"
+const whiteGlowImg = new Image()
+whiteGlowImg.src = "img/whiteGlow.png"
+const redGlowImg = new Image()
+redGlowImg.src = "img/redGlow.png"
 
 let leftTrigger = false
 let starGenTime = 1000
 let rockGenTime = 1000
 let drawIntervalTime = 10
-let healthPackTimeout = 10000
+let healthPackTimeout = 15000
 
 let ship = {
     x: 500,
     y: 800,
     speed: 20, //higher is lower
     hp: 700,
-    maxHP: 700
+    maxHP: 700,
+    stamina: 100,
+    maxStamina: 100,
 }
 
 let fireSprite = {
@@ -92,7 +100,8 @@ let bullet = {
     speed: 10,
     rof: 250, //higher is lower
     size: 10,
-    dmg: 100
+    dmg: 100,
+    stamCost: 6
 }
 
 let star = {
@@ -178,7 +187,7 @@ function startDrawInterval() {
         animateJetSprite()
         drawEnemyShips()
         moveShip()
-        if (leftTrigger && gunCD == 0) fire()
+        if (leftTrigger && gunCD == 0 && ship.stamina > bullet.stamCost) fire()
         drawBullets()
         drawRocks()
         rockBulletColl()
@@ -214,6 +223,9 @@ function startDrawInterval() {
             shipColl(activeEnemyBullets[i], "bullet", i)
         }
 
+        ship.stamina += ship.maxStamina * 0.0013
+        if (ship.stamina > ship.maxStamina) ship.stamina = ship.maxStamina
+        drawStamina()
         drawMiniHP()
         drawHP()
         startDrawInterval()
@@ -253,10 +265,12 @@ function startIncreaseDifficultyInterval() {
         else
             rockGenTime -= rockGenTime / 50
         enemyBullets[0].dmg *= 1.1
-        enemyBullets[0].rof -= enemyBullets[0].rof / 30
-        enemyShips[0].hp *= 1.12
+        enemyBullets[0].rof -= enemyBullets[0].rof / 50
+        enemyShips[0].hp *= 1.06
         ship.maxHP *= 1.1
         ship.hp = (ship.hp / (ship.maxHP / 1.1)) * ship.maxHP
+        ship.maxStamina *= 1.02
+        ship.stamina = (ship.stamina / (ship.maxStamina / 1.02)) * ship.maxStamina
         bullet.dmg += Math.random() * 10 + 5
         bullet.rof -= bullet.rof / 70
         startIncreaseDifficultyInterval()
