@@ -65,7 +65,7 @@ let bulletExplosionTemplate = {
 }
 
 bulletExplosionTemplate.img = new Image()
-bulletExplosionTemplate.img.src = "img/explosion.png"
+bulletExplosionTemplate.img.src = "img/Explosion.png"
 
 let shipExplosionTemplate = {
     img: null,
@@ -78,7 +78,7 @@ let shipExplosionTemplate = {
 }
 
 shipExplosionTemplate.img = new Image()
-shipExplosionTemplate.img.src = "img/explosion.png"
+shipExplosionTemplate.img.src = "img/Explosion.png"
 
 let activeRockExplosions = []
 let activeBulletExplosions = []

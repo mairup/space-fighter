@@ -170,7 +170,7 @@ function explodeBullet(i) {
     explosion.x = activeBullets[i].x
     explosion.y = activeBullets[i].y
     explosion.img = new Image()
-    explosion.img.src = "img/explosion.png"
+    explosion.img.src = "img/Explosion.png"
     explosion.size = activeBullets[i].size
 
     activeBullets.splice(i, 1)
@@ -192,7 +192,7 @@ function explodeEnemyBullet(i) {
     explosion.x = activeEnemyBullets[i].x
     explosion.y = activeEnemyBullets[i].y
     explosion.img = new Image()
-    explosion.img.src = "img/explosion.png"
+    explosion.img.src = "img/Explosion.png"
     explosion.size = activeEnemyBullets[i].size
 
     activeEnemyBullets.splice(i, 1)
@@ -237,7 +237,7 @@ function explodeEnemyShip(i) {
     explosion.x = activeShips[i].x
     explosion.y = activeShips[i].y
     explosion.img = new Image()
-    explosion.img.src = "img/explosion.png"
+    explosion.img.src = "img/Explosion.png"
     explosion.rotation = activeShips[i].rotation
     explosion.size = activeShips[i].size - activeShips[i].size / 3
 
