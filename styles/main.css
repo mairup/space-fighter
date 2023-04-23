@@ -1,3 +1,8 @@
+@font-face {
+  font-family: gameFont;
+  src: url(valorax.otf);
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -7,9 +12,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: black;
 }
 
 #canvas {
+  position: absolute;
   background-image: url(../img/background1.png);
   background-size: cover;
   height: 100vh;
@@ -18,4 +25,46 @@ body {
 #canvas:hover {
   cursor: crosshair;
   color: rgba(18, 125, 151, 0.6);
+}
+
+#menu-screen {
+  height: 100vh;
+  position: relative;
+  background-color: rgba(63, 63, 63, 0.8);
+  aspect-ratio: 1;
+  text-align: center;
+  font-family: gameFont;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-flow: column;
+}
+
+#menu-screen span {
+  font-size: inherit;
+}
+
+#main-title {
+  width: 80%;
+}
+
+#buttons-container {
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+}
+
+#buttons-container div {
+  font-size: inherit;
+  padding-bottom: 10px;
+}
+
+#buttons-container div:hover {
+  color: rgb(219, 216, 23);
+  cursor: pointer;
+}
+
+#timeSurvived {
+  opacity: 0;
 }

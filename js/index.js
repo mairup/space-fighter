@@ -1,5 +1,3 @@
-const canvas = document.getElementById("canvas")
-const context = canvas.getContext("2d")
 const shipImg = document.getElementById("ship")
 const bulletB = document.getElementById("bulletB")
 const starImg = document.getElementById("star")
@@ -24,19 +22,13 @@ const redGlowImg = new Image()
 redGlowImg.src = "img/redGlow.png"
 
 let leftTrigger = false
-let starGenTime = 1000
-let rockGenTime = 1000
-let drawIntervalTime = 10
-let healthPackTimeout = 15000
+let starGenTime
+let rockGenTime
+let drawIntervalTime
+let healthPackTimeout
 
 let ship = {
-    x: 500,
-    y: 800,
-    speed: 20, //higher is lower
-    hp: 700,
-    maxHP: 700,
-    stamina: 100,
-    maxStamina: 100,
+    isDead: true
 }
 
 let fireSprite = {
@@ -96,13 +88,7 @@ let activeBulletExplosions = []
 let activeShipExplosions = []
 let activeEnemyBulletsExplosions = []
 
-let bullet = {
-    speed: 10,
-    rof: 250, //higher is lower
-    size: 10,
-    dmg: 100,
-    stamCost: 6
-}
+let bullet = {}
 
 let star = {
     speed: 1,
@@ -127,64 +113,23 @@ let mousePos = {
     y: 800
 }
 
-let enemyBullets = [{
-    speed: 7,
-    rof: 1000, //higher is lower
-    size: 5,
-    dmg: 50
-},
-{
-    speed: 5,
-    rof: 250, //higher is lower
-    size: 5,
-    dmg: 150
-},
-{
-    speed: 10,
-    rof: 250, //higher is lower
-    size: 5,
-    dmg: 30
-}]
+let enemyBullets = []
 
-let enemyShips = [{
-    size: 120,
-    x: 0,
-    y: 0,
-    ySpeed: 2,
-    xSpeed: 2,
-    hp: 350,
-    bullet: enemyBullets[0]
-},
-{
-    size: 50,
-    x: 0,
-    y: 0,
-    ySpeed: 0.5,
-    xSpeed: 2,
-    hp: 300,
-    bullet: enemyBullets[1]
-},
-{
-    size: 50,
-    x: 0,
-    y: 0,
-    ySpeed: 0.5,
-    xSpeed: 2,
-    hp: 50,
-    bullet: enemyBullets[2]
-}
-]
+let enemyShips = []
 
-let enemyShipsTimeout = 5000
+let enemyShipsTimeout
 let gunCD = 0
 
-let drawInterval
+let drawInterval = null
 function startDrawInterval() {
     drawInterval = setTimeout(() => {
         context.clearRect(0, 0, 1000, 1000)
         drawStars()
-        drawShip()
-        animateJetSprite()
+        if (ship.hp > 0) {
+            drawShip()
+            animateJetSprite()
+        }
+
         drawEnemyShips()
         moveShip()
         if (leftTrigger && gunCD == 0 && ship.stamina > bullet.stamCost) fire()
@@ -195,13 +140,29 @@ function startDrawInterval() {
         drawHealthPacks()
 
         for (let i = 0; i < activeRocks.length; i++)
-            shipColl(activeRocks[i], "rock", i)
+            if (shipColl(activeRocks[i], "rock", i) === "break") {
+                animateDeath()
+                setTimeout(() => {
+                    endGame()
+                    return
+                }, 500);
+            }
 
-        for (let i = 0; i < activeShips.length; i++)
-            if (shipColl(activeShips[i], "ship", i) && activeShips[i].fireCD == 0) enemyShipFire(activeShips[i])
+        for (let i = 0; i < activeShips.length; i++) {
+            let tmp = shipColl(activeShips[i], "ship", i)
+            if (tmp === "break") break
+            if (tmp && activeShips[i].fireCD == 0) enemyShipFire(activeShips[i])
+        }
 
         for (let i = 0; i < activeHealthPacks.length; i++)
-            shipColl(activeHealthPacks[i], "healthPack", i)
+            if (shipColl(activeHealthPacks[i], "healthPack", i) === "break") {
+                animateDeath()
+                setTimeout(() => {
+                    endGame()
+                    return
+                }, 500);
+            }
+
 
         for (let i = 0; i < activeRockExplosions.length; i++)
             drawRockExplosion(activeRockExplosions[i])
@@ -220,7 +181,13 @@ function startDrawInterval() {
             activeEnemyBullets[i].y += activeEnemyBullets[i].speed
             activeEnemyBullets[i].x += activeEnemyBullets[i].speedX
             drawEnemyBullets(i)
-            shipColl(activeEnemyBullets[i], "bullet", i)
+            if (shipColl(activeEnemyBullets[i], "bullet", i) === "break") {
+                animateDeath()
+                setTimeout(() => {
+                    endGame()
+                    return
+                }, 500);
+            }
         }
 
         ship.stamina += ship.maxStamina * 0.0013
@@ -294,7 +261,6 @@ function startIntervals() {
     startHealthPackInterval()
 }
 
-startIntervals()
 
 function clearIntervals() {
     clearTimeout(drawInterval)

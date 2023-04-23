@@ -263,13 +263,6 @@ function checkDistance(obj1, obj2) {
         return (Math.sqrt(Math.abs((obj1.x - obj2.x) * (obj1.x - obj2.x) + ((obj1.y - obj2.y) * (obj1.y - obj2.y)))))
 }
 
-function togglePause() {
-    if (drawInterval === null)
-        startIntervals()
-    else
-        clearIntervals()
-}
-
 document.addEventListener("keypress", (e) => {
     if (e.key == "p" || e.key == "P")
         togglePause()
@@ -315,9 +308,8 @@ function shipColl(obj, type, i) {
     if (flag && type == "healthPack")
         pickupHealthPack(obj, i)
 
-    if (ship.hp <= 0)
-        endGame()
-
+    if (ship.hp <= 0 && !ship.isDead)
+        return "break"
 
     return bool
 }
@@ -496,6 +488,23 @@ function drawStamina() {
     context.fillRect(70, 905, ship.stamina == Math.abs(ship.stamina) ? (ship.stamina / ship.maxStamina) * 860 : 0, 20)
 }
 
-function endGame() {
+function animateDeath() {
+    ship.isDead = true
+    let explosion = { ...shipExplosionTemplate }
+    explosion.x = ship.x
+    explosion.y = ship.y
+    explosion.img = new Image()
+    explosion.img.src = "img/Explosion.png"
+    explosion.size = 150
 
+    activeShipExplosions.push(explosion)
+    let int = setInterval(() => {
+        explosion.currentframe++
+        if (explosion.currentframe >= explosion.totalframes) {
+            clearInterval(int)
+            activeShipExplosions.splice(i, 1)
+        }
+    }, 40);
+
+    explosion3Sound.play()
 }
