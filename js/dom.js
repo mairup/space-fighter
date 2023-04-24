@@ -5,9 +5,9 @@ const timeSurvivedDiv = document.getElementById("timeSurvived")
 const mainTitleDiv = document.getElementById("main-title")
 const startButton = document.getElementById("start-button")
 const resumeButton = document.getElementById("resume-button")
-menuScreen.style.fontSize = (canvas.width / 10) + "px"
-document.getElementById("buttons-container").style.fontSize = (canvas.width / 30) + "px"
-timeSurvivedDiv.style.fontSize = (canvas.width / 30) + "px"
+menuScreen.style.fontSize = (canvas.width / 5) + "px"
+document.getElementById("buttons-container").style.fontSize = (canvas.width / 20) + "px"
+timeSurvivedDiv.style.fontSize = (canvas.width / 18) + "px"
 
 let timeSurvived = 0;
 
@@ -37,7 +37,6 @@ function togglePause() {
         clearIntervals()
         showMenu()
     }
-
 }
 
 function hideMenu() {
@@ -51,6 +50,8 @@ function showMenu() {
 }
 
 function restartGame() {
+
+    timeSurvived = 0
 
     mousePos = {
         x: 500,

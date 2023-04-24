@@ -57,7 +57,7 @@ body {
 
 #buttons-container div {
   font-size: inherit;
-  padding-bottom: 10px;
+  padding-bottom: 30px;
   user-select: none;
   caret-color: rgba(0, 0, 0, 0);
 }
