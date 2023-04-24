@@ -20,6 +20,8 @@ const whiteGlowImg = new Image()
 whiteGlowImg.src = "img/whiteGlow.png"
 const redGlowImg = new Image()
 redGlowImg.src = "img/redGlow.png"
+const uiBox = new Image()
+uiBox.src = "img/uiBox.png"
 
 let leftTrigger = false
 let starGenTime
@@ -27,6 +29,8 @@ let rockGenTime
 let drawIntervalTime
 let healthPackTimeout
 let timeSurvivedTimeout
+let rockDmgMultiplier
+let score
 
 let ship = {
     isDead: true
@@ -190,9 +194,7 @@ function startDrawInterval() {
 
         ship.stamina += ship.maxStamina * 0.0013
         if (ship.stamina > ship.maxStamina) ship.stamina = ship.maxStamina
-        drawStamina()
-        drawMiniHP()
-        drawHP()
+        drawUI()
         startDrawInterval()
     }, drawIntervalTime)
 }
@@ -222,6 +224,7 @@ function startEnemyShipInterval() {
 }
 
 function startTimeInterval() {
+    console.log("abc");
     timeSurvivedTimeout = setTimeout(() => {
         timeSurvived += 0.1
         startTimeInterval()
@@ -245,8 +248,9 @@ function startIncreaseDifficultyInterval() {
         ship.stamina = (ship.stamina / (ship.maxStamina / 1.02)) * ship.maxStamina
         bullet.dmg += Math.random() * 10 + 5
         bullet.rof -= bullet.rof / 70
+        rockDmgMultiplier *= 1.1
         startIncreaseDifficultyInterval()
-    }, 7000)
+    }, 5000)
 }
 
 let healthPackInterval

@@ -1,13 +1,12 @@
 const canvas = document.getElementById("canvas")
 const context = canvas.getContext("2d")
+context.font = '30px gameFont';
 const menuScreen = document.getElementById("menu-screen")
-const timeSurvivedDiv = document.getElementById("timeSurvived")
 const mainTitleDiv = document.getElementById("main-title")
 const startButton = document.getElementById("start-button")
 const resumeButton = document.getElementById("resume-button")
-menuScreen.style.fontSize = (canvas.width / 5) + "px"
+menuScreen.style.fontSize = (canvas.width / 7) + "px"
 document.getElementById("buttons-container").style.fontSize = (canvas.width / 20) + "px"
-timeSurvivedDiv.style.fontSize = (canvas.width / 18) + "px"
 
 let timeSurvived = 0;
 
@@ -21,8 +20,6 @@ function endGame() {
 function togglePause() {
     startButton.innerText = "RESTART"
     resumeButton.style.display = "flex"
-    timeSurvivedDiv.innerText = "Time survived: " + Math.floor(timeSurvived) + " seconds"
-    timeSurvivedDiv.style.opacity = 1
     if (ship.isDead) {
         restartGame()
         mainTitleDiv.innerText = "GAME OVER"
@@ -50,8 +47,9 @@ function showMenu() {
 }
 
 function restartGame() {
-
     timeSurvived = 0
+    rockDmgMultiplier = 1
+    score = 0
 
     mousePos = {
         x: 500,
@@ -137,7 +135,6 @@ function restartGame() {
     rockGenTime = 1000
     drawIntervalTime = 10
     healthPackTimeout = 15000
-    timeSurvivedTimeout = 1000
 }
 
 startButton.addEventListener("click", () => {

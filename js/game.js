@@ -213,6 +213,7 @@ function explodeEnemyBullet(i) {
 }
 
 function explodeRock(i) {
+    score += activeRocks[i].maxHP
     let explosion = { ...rockExplosionTemplate }
     explosion.x = activeRocks[i].x
     explosion.y = activeRocks[i].y
@@ -236,6 +237,7 @@ function explodeRock(i) {
 }
 
 function explodeEnemyShip(i) {
+    score += activeShips[i].maxHP
     let explosion = { ...shipExplosionTemplate }
     explosion.x = activeShips[i].x
     explosion.y = activeShips[i].y
@@ -293,7 +295,7 @@ function shipColl(obj, type, i) {
 
 
     if (flag && type == "rock") {
-        ship.hp -= activeRocks[i].hp
+        ship.hp -= activeRocks[i].hp * rockDmgMultiplier
         explodeRock(i)
     }
 
@@ -510,4 +512,19 @@ function animateDeath() {
     }, 40);
 
     explosion3Sound.play()
+}
+
+function drawUI() {
+    drawStamina()
+    drawMiniHP()
+    drawHP()
+
+    context.fillStyle = 'black';
+    context.textAlign = 'center';
+
+    context.drawImage(uiBox, 10, 10, 400, 50)
+    context.fillText("Score: " + Math.floor(score), 200, 45, 290);
+
+    context.drawImage(uiBox, 590, 10, 400, 50)
+    context.fillText("Time: " + Math.floor(timeSurvived), 790, 45, 290);
 }
