@@ -245,7 +245,6 @@ function startIncreaseDifficultyInterval() {
         ship.stamina = (ship.stamina / (ship.maxStamina / 1.02)) * ship.maxStamina
         bullet.dmg += Math.random() * 10 + 5
         bullet.rof -= bullet.rof / 70
-        rock.size *= 1.02
         startIncreaseDifficultyInterval()
     }, 7000)
 }
