@@ -133,7 +133,7 @@ function restartGame() {
 
     starGenTime = 1000
     rockGenTime = 1000
-    drawIntervalTime = 10
+    drawIntervalTime = 14
     healthPackTimeout = 15000
 }
 

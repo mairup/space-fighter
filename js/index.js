@@ -224,7 +224,6 @@ function startEnemyShipInterval() {
 }
 
 function startTimeInterval() {
-    console.log("abc");
     timeSurvivedTimeout = setTimeout(() => {
         timeSurvived += 0.1
         startTimeInterval()
