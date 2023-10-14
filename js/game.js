@@ -72,12 +72,12 @@ function drawBullets() {
 function drawEnemyBullets(i) {
     for (let j = 0; j < activeEnemyBullets.length; j++) {
         context.save();
-        context.translate(activeEnemyBullets[j].x - 25, activeEnemyBullets[j].y - 25);
+        context.translate(activeEnemyBullets[j].x, activeEnemyBullets[j].y);
         context.rotate(Math.PI * activeEnemyBullets[j].rotation);
-        context.drawImage(bulletR, -50, -30, 150, 150)
+        context.drawImage(bulletR, -75, -75, 150, 150)
         context.restore();
 
-        if (activeEnemyBullets[j].y > 1100)
+        if (activeEnemyBullets[j].y > 1100 || activeEnemyBullets[j].x > 1100 || activeEnemyBullets[j].x < -100)
             activeEnemyBullets.splice(j, 1)
     }
 }
