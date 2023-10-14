@@ -14,7 +14,12 @@ canvas.style.zIndex = 0
 menuScreen.style.zIndex = 1
 
 function endGame() {
-    togglePause()
+    ship = {
+        isDead: true
+    }
+    setTimeout(() => {
+        togglePause()
+    }, 1000)
 }
 
 function togglePause() {

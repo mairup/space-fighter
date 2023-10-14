@@ -144,10 +144,7 @@ function startDrawInterval() {
         for (let i = 0; i < activeRocks.length; i++)
             if (shipColl(activeRocks[i], "rock", i) === "break") {
                 animateDeath()
-                setTimeout(() => {
-                    endGame()
-                    return
-                }, 1000);
+                endGame()
             }
 
         for (let i = 0; i < activeShips.length; i++) {
@@ -159,10 +156,7 @@ function startDrawInterval() {
         for (let i = 0; i < activeHealthPacks.length; i++)
             if (shipColl(activeHealthPacks[i], "healthPack", i) === "break") {
                 animateDeath()
-                setTimeout(() => {
-                    endGame()
-                    return
-                }, 1000);
+                endGame()
             }
 
 
@@ -185,10 +179,7 @@ function startDrawInterval() {
             drawEnemyBullets(i)
             if (shipColl(activeEnemyBullets[i], "bullet", i) === "break") {
                 animateDeath()
-                setTimeout(() => {
-                    endGame()
-                    return
-                }, 1000);
+                endGame()
             }
         }
 
