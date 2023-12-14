@@ -434,12 +434,13 @@ function enemyShipFire(enemyShip) {
     let speedX = (ship.x - enemyShip.x) * 7 / (Math.abs(enemyShip.y - ship.y))
     if (speedX > 5) speedX = 5
     else if (speedX < -5) speedX = -5
+    console.log(speedX);
 
     activeEnemyBullets.push({
         speed: enemyShip.bullet.speed,
         size: enemyShip.bullet.size,
         dmg: enemyShip.bullet.dmg,
-        x: enemyShip.x,
+        x: enemyShip.x + speedX * 5,
         y: enemyShip.y + 30,
         speedX: speedX,
         rotation: -Math.sin(speedX / 20)
