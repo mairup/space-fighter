@@ -156,8 +156,9 @@ document.addEventListener("keypress", (e) => {
     if (e.key == "p" || e.key == "P")
         togglePause()
     if (e.key == "f" || e.key == "F")
-        document.body.requestFullscreen()
-
+        document.exitFullscreen().catch((err) => {
+            document.body.requestFullscreen()
+        })
 })
 
 canvas.addEventListener("mousemove", (e) => {
