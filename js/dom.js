@@ -24,7 +24,7 @@ function endGame() {
 }
 
 function togglePause() {
-    startButton.innerText = "RESTART"
+    startButton.innerText = "Restart"
     resumeButton.style.display = "flex"
     if (ship.isDead) {
         restartGame()
@@ -151,3 +151,25 @@ startButton.addEventListener("click", () => {
 resumeButton.addEventListener("click", () => {
     togglePause()
 })
+
+document.addEventListener("keypress", (e) => {
+    if (e.key == "p" || e.key == "P")
+        togglePause()
+    if (e.key == "f" || e.key == "F")
+        document.body.requestFullscreen()
+
+})
+
+canvas.addEventListener("mousemove", (e) => {
+    mousePos.x = (1000 / canvas.offsetWidth) * e.offsetX
+    mousePos.y = (1000 / canvas.offsetHeight) * e.offsetY
+})
+
+window.addEventListener("mousedown", () => {
+    leftTrigger = true
+})
+
+window.addEventListener("mouseup", () => {
+    leftTrigger = false
+})
+

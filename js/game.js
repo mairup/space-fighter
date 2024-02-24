@@ -14,22 +14,7 @@ function drawShip() {
     */
 }
 
-canvas.addEventListener("mousemove", (e) => {
-    mousePos.x = (1000 / canvas.offsetWidth) * e.offsetX
-    mousePos.y = (1000 / canvas.offsetHeight) * e.offsetY
-})
 
-canvas.addEventListener("mousedown", () => {
-    leftTrigger = true
-})
-
-canvas.addEventListener("mouseup", () => {
-    leftTrigger = false
-})
-
-canvas.addEventListener("mouseout", () => {
-    leftTrigger = false
-})
 
 function moveShip() {
     if (checkDistance(mousePos, ship) < 150) {
@@ -265,13 +250,6 @@ function checkDistance(obj1, obj2) {
         return (Math.sqrt(Math.abs((obj1.x - obj2.x) * (obj1.x - obj2.x) + ((obj1.y - obj2.y) * (obj1.y - obj2.y)))))
 }
 
-document.addEventListener("keypress", (e) => {
-    if (e.key == "p" || e.key == "P")
-        togglePause()
-    if (e.key == "f" || e.key == "F")
-        document.body.requestFullscreen()
-
-})
 
 function shipColl(obj, type, i) {
     let bool = true
