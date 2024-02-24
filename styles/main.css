@@ -1,11 +1,12 @@
 @font-face {
   font-family: gameFont;
-  src: url(valorax.otf);
+  src: url(gamer.ttf);
 }
 
 * {
   padding: 0;
   margin: 0;
+  font-weight: 800 !important;
 }
 
 body {
@@ -24,13 +25,13 @@ body {
 
 #canvas:hover {
   cursor: crosshair;
-  color: rgba(18, 125, 151, 0.6);
+  color: rgba(18, 125, 151, 0.65);
 }
 
 #menu-screen {
   height: 100vh;
   position: relative;
-  background-color: rgba(50, 50, 50, 0.6);
+  background-color: rgba(100, 100, 100, 0.6);
   aspect-ratio: 1;
   text-align: center;
   font-family: gameFont;

@@ -1,12 +1,13 @@
 const canvas = document.getElementById("canvas")
 const context = canvas.getContext("2d")
-context.font = '30px gameFont';
+context.font = '700 30px gameFont';
 const menuScreen = document.getElementById("menu-screen")
 const mainTitleDiv = document.getElementById("main-title")
 const startButton = document.getElementById("start-button")
 const resumeButton = document.getElementById("resume-button")
 menuScreen.style.fontSize = (canvas.width / 7) + "px"
 document.getElementById("buttons-container").style.fontSize = (canvas.width / 20) + "px"
+context.font.fontWeight = 700
 
 let timeSurvived = 0;
 
