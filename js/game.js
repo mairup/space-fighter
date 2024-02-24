@@ -86,7 +86,7 @@ function drawStars() {
 }
 
 function generateRocks() {
-    let tmp = Math.random() * (rock.size / 2) + rock.size / 2
+    let tmp = Math.random() * (rock.size / 2) + rock.size / 2 //added rock.size / 2 to make the smallest rock size half of the biggest
     let rotationSpeed = 0
     while (rotationSpeed > -0.5 && rotationSpeed < 0.5)
         rotationSpeed = ((Math.random() * 4) - 2) / 2
@@ -94,8 +94,8 @@ function generateRocks() {
     activeRocks.push({
         speed: rock.speed,
         size: tmp,
-        hp: tmp * 1.7,
-        maxHP: tmp * 1.7,
+        hp: tmp * rock.hpMultiplier,
+        maxHP: tmp * rock.hpMultiplier,
         x: Math.random() * 1000,
         y: -50,
         rotation: (Math.random() * 360),
@@ -222,7 +222,7 @@ function explodeRock(i) {
 }
 
 function explodeEnemyShip(i) {
-    score += activeShips[i].maxHP
+    score += activeShips[i].maxHP * 2 //double score for killing a ship
     let explosion = { ...shipExplosionTemplate }
     explosion.x = activeShips[i].x
     explosion.y = activeShips[i].y
@@ -412,7 +412,6 @@ function enemyShipFire(enemyShip) {
     let speedX = (ship.x - enemyShip.x) * 7 / (Math.abs(enemyShip.y - ship.y))
     if (speedX > 5) speedX = 5
     else if (speedX < -5) speedX = -5
-    console.log(speedX);
 
     activeEnemyBullets.push({
         speed: enemyShip.bullet.speed,

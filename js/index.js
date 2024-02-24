@@ -103,7 +103,7 @@ let star = {
 let rock = {
     speed: 5,
     size: 100,
-    hp: 200
+    hpMultiplier: 5
 }
 
 let activeBullets = []
@@ -238,7 +238,11 @@ function startIncreaseDifficultyInterval() {
         ship.stamina = (ship.stamina / (ship.maxStamina / 1.02)) * ship.maxStamina
         bullet.dmg += Math.random() * 10 + 5
         bullet.rof -= bullet.rof / 70
-        rockDmgMultiplier *= 1.1
+        //rockDmgMultiplier *= 1.1
+        activeRocks.forEach(rock => {
+            rock.hp *= 1.15;
+            rock.maxHP *= 1.15;
+        });
         startIncreaseDifficultyInterval()
     }, 5000)
 }
