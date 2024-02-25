@@ -22,6 +22,10 @@ const redGlowImg = new Image()
 redGlowImg.src = "img/redGlow.png"
 const uiBox = new Image()
 uiBox.src = "img/uiBox.png"
+const energyPack = new Image()
+energyPack.src = "img/blue-energy.png"
+const blueGlow = new Image()
+blueGlow.src = "img/blue-glow.png"
 
 let leftTrigger = false
 let starGenTime
@@ -29,7 +33,6 @@ let rockGenTime
 let drawIntervalTime
 let healthPackTimeout
 let timeSurvivedTimeout
-let rockDmgMultiplier
 let score
 
 let ship = {
@@ -173,15 +176,19 @@ function startDrawInterval() {
         for (let i = 0; i < activeEnemyBulletsExplosions.length; i++)
             drawBulletExplosion(activeEnemyBulletsExplosions[i], -1)
 
+        drawEnemyBullets()
+
         for (let i = 0; i < activeEnemyBullets.length; i++) {
             activeEnemyBullets[i].y += activeEnemyBullets[i].speed
             activeEnemyBullets[i].x += activeEnemyBullets[i].speedX
-            drawEnemyBullets(i)
+
             if (shipColl(activeEnemyBullets[i], "bullet", i) === "break") {
                 animateDeath()
                 endGame()
             }
         }
+
+
 
         ship.stamina += ship.maxStamina * 0.0013
         if (ship.stamina > ship.maxStamina) ship.stamina = ship.maxStamina

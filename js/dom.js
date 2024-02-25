@@ -54,7 +54,6 @@ function showMenu() {
 
 function restartGame() {
     timeSurvived = 0
-    rockDmgMultiplier = 1
     score = 0
 
     mousePos = {

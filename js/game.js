@@ -54,7 +54,7 @@ function drawBullets() {
     }
 }
 
-function drawEnemyBullets(i) {
+function drawEnemyBullets() {
     for (let j = 0; j < activeEnemyBullets.length; j++) {
         context.save();
         context.translate(activeEnemyBullets[j].x, activeEnemyBullets[j].y);
@@ -273,7 +273,7 @@ function shipColl(obj, type, i) {
 
 
     if (flag && type == "rock") {
-        ship.hp -= activeRocks[i].hp * rockDmgMultiplier
+        ship.hp -= activeRocks[i].hp
         explodeRock(i)
     }
 
