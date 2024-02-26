@@ -47,6 +47,7 @@ body {
 
 #main-title {
   width: 80%;
+  user-select: none;
 }
 
 #buttons-container {

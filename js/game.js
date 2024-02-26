@@ -366,7 +366,7 @@ function spawnEnemyShip() {
         ySpeed: enemyShips[0].ySpeed,
         hp: enemyShips[0].hp,
         maxHP: enemyShips[0].hp,
-        bullet: enemyBullets[0],
+        bullet: enemyBullets.normal,
         activeBullets: [],
         fireCD: 0
     })

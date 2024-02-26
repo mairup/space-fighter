@@ -87,52 +87,26 @@ function restartGame() {
     activeEnemyBullets = []
     activeHealthPacks = []
 
-    enemyBullets = [{
-        speed: 7,
-        rof: 1000, //higher is lower
-        size: 5,
-        dmg: 50
-    },
-    {
-        speed: 5,
-        rof: 250, //higher is lower
-        size: 5,
-        dmg: 150
-    },
-    {
-        speed: 10,
-        rof: 250, //higher is lower
-        size: 5,
-        dmg: 30
-    }]
+    enemyBullets = {
+        normal: {
+            speed: 7,
+            rof: 1000, //higher is lower
+            size: 5,
+            dmg: 50
+        },
+    }
 
-    enemyShips = [{
-        size: 120,
-        x: 0,
-        y: 0,
-        ySpeed: 2,
-        xSpeed: 2,
-        hp: 350,
-        bullet: enemyBullets[0]
-    },
-    {
-        size: 50,
-        x: 0,
-        y: 0,
-        ySpeed: 0.5,
-        xSpeed: 2,
-        hp: 300,
-        bullet: enemyBullets[1]
-    },
-    {
-        size: 50,
-        x: 0,
-        y: 0,
-        ySpeed: 0.5,
-        xSpeed: 2,
-        hp: 50,
-        bullet: enemyBullets[2]
-    }]
+    enemyShips = [
+        {
+            size: 120,
+            x: 0,
+            y: 0,
+            ySpeed: 2,
+            xSpeed: 2,
+            hp: 350,
+            bullet: enemyBullets.normal
+        }
+    ]
 
     enemyShipsTimeout = 5000
 
@@ -151,13 +125,23 @@ resumeButton.addEventListener("click", () => {
     togglePause()
 })
 
-document.addEventListener("keypress", (e) => {
+document.addEventListener("keydown", (e) => {
     if (e.key == "p" || e.key == "P" || e.key == " ")
         togglePause()
     if (e.key == "f" || e.key == "F")
         document.exitFullscreen().catch((err) => {
             document.body.requestFullscreen()
         })
+    if (e.key == "F9") {
+        if (typeof logFPSInterval === "undefined")
+            logFPS()
+        else {
+            clearInterval(logFPSInterval)
+            logFPSInterval = undefined
+        }
+
+
+    }
 })
 
 canvas.addEventListener("mousemove", (e) => {
@@ -173,3 +157,14 @@ window.addEventListener("mouseup", () => {
     leftTrigger = false
 })
 
+//let currentTime = Date.now()
+function logFPS() {
+    frameCounter = 0
+    logFPSInterval = setInterval(() => {
+
+        //console.log("time difference: ", Date.now() - currentTime)
+        currentTime = Date.now()
+        console.log('FPS: ', frameCounter / 2);
+        frameCounter = 0
+    }, 2000)
+}

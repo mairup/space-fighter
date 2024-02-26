@@ -126,10 +126,13 @@ let enemyShips = []
 
 let enemyShipsTimeout
 let gunCD = 0
+let frameCounter = 0
+let logFPSInterval
 
 let drawInterval = null
 function startDrawInterval() {
     drawInterval = setTimeout(() => {
+        frameCounter++ // !!!!!!!!!!!!!!!!!!!!!!!!!
         context.clearRect(0, 0, 1000, 1000)
         drawStars()
         if (ship.hp > 0) {
@@ -210,7 +213,6 @@ function startStarInterval() {
 let rockInterval
 function startRockInterval() {
     rockInterval = setTimeout(() => {
-        console.log(rock.spawnCounter);
         if (rock.spawnCounter >= (100 * rock.intensity)) {
             generateRock()
             rock.spawnCounter = 0
@@ -245,8 +247,8 @@ function startIncreaseDifficultyInterval() {
         else
             rockGenTime -= rockGenTime / 50
 
-        enemyBullets[0].dmg *= 1.1
-        enemyBullets[0].rof -= enemyBullets[0].rof / 50
+        enemyBullets.normal.dmg *= 1.08
+        enemyBullets.normal.rof -= enemyBullets.normal.rof / 50
         enemyShips[0].hp *= 1.06
         let relativeHp = ship.hp / ship.maxHP
         ship.maxHP *= 1.08
