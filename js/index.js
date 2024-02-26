@@ -106,7 +106,9 @@ let star = {
 let rock = {
     speed: 5,
     size: 100,
-    hpMultiplier: 5
+    hpMultiplier: 5,
+    spawnCounter: 0,
+    intensity: 1
 }
 
 let activeBullets = []
@@ -208,9 +210,15 @@ function startStarInterval() {
 let rockInterval
 function startRockInterval() {
     rockInterval = setTimeout(() => {
-        generateRocks()
+        console.log(rock.spawnCounter);
+        if (rock.spawnCounter >= (100 * rock.intensity)) {
+            generateRock()
+            rock.spawnCounter = 0
+        }
+
+        else rock.spawnCounter++
         startRockInterval()
-    }, (Math.random() * rockGenTime) + rockGenTime)
+    }, ((Math.random() * rockGenTime) + rockGenTime) / 100)
 }
 
 let enemyShipInterval
@@ -236,16 +244,17 @@ function startIncreaseDifficultyInterval() {
             rockGenTime -= 40
         else
             rockGenTime -= rockGenTime / 50
+
         enemyBullets[0].dmg *= 1.1
         enemyBullets[0].rof -= enemyBullets[0].rof / 50
         enemyShips[0].hp *= 1.06
-        ship.maxHP *= 1.1
-        ship.hp = (ship.hp / (ship.maxHP / 1.1)) * ship.maxHP
+        let relativeHp = ship.hp / ship.maxHP
+        ship.maxHP *= 1.08
+        ship.hp = relativeHp * ship.maxHP
         ship.maxStamina *= 1.02
         ship.stamina = (ship.stamina / (ship.maxStamina / 1.02)) * ship.maxStamina
-        bullet.dmg += Math.random() * 10 + 5
+        bullet.dmg += Math.random() * 10 + 5 //???
         bullet.rof -= bullet.rof / 70
-        //rockDmgMultiplier *= 1.1
         activeRocks.forEach(rock => {
             rock.hp *= 1.15;
             rock.maxHP *= 1.15;

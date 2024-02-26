@@ -85,17 +85,18 @@ function drawStars() {
     }
 }
 
-function generateRocks() {
-    let tmp = Math.random() * (rock.size / 2) + rock.size / 2 //added rock.size / 2 to make the smallest rock size half of the biggest
+function generateRock() {
+    let rockSize = Math.random() * (rock.size / 2) + rock.size / 2 //added rock.size / 2 to make the smallest rock size half of the biggest
     let rotationSpeed = 0
     while (rotationSpeed > -0.5 && rotationSpeed < 0.5)
         rotationSpeed = ((Math.random() * 4) - 2) / 2
 
     activeRocks.push({
         speed: rock.speed,
-        size: tmp,
-        hp: tmp * rock.hpMultiplier,
-        maxHP: tmp * rock.hpMultiplier,
+        size: rockSize,
+        relativeSize: rockSize / rock.size,
+        hp: rockSize * rock.hpMultiplier,
+        maxHP: rockSize * rock.hpMultiplier,
         x: Math.random() * 1000,
         y: -50,
         rotation: (Math.random() * 360),
@@ -273,7 +274,7 @@ function shipColl(obj, type, i) {
 
 
     if (flag && type == "rock") {
-        ship.hp -= activeRocks[i].hp
+        ship.hp -= (activeRocks[i].hp > ship.hp / 10) ? activeRocks[i].hp : ((ship.hp / 10) * (activeRocks[i].hp / (activeRocks[i].relativeSize * activeRocks[i].maxHP)))
         explodeRock(i)
     }
 
@@ -289,7 +290,7 @@ function shipColl(obj, type, i) {
     }
 
     if (flag && type == "healthPack")
-        pickupHealthPack(obj, i)
+        pickupHealthPack(i)
 
     if (ship.hp <= 0 && !ship.isDead)
         return "break"
@@ -334,7 +335,7 @@ function drawShipExplosion(explosion) {
 function drawHP() {
     context.drawImage(hpTable, 50, 950, 900, 30)
     context.fillStyle = 'rgba(65, 214, 45, 0.6)'
-    if (ship.hp / ship.maxHP < 0.3) {
+    if (ship.hp / ship.maxHP < 0.20) {
         context.fillStyle = 'rgba(214, 56, 45, 0.6)'
         canvas.style.filter = "grayscale(0.4)"
     }
@@ -432,7 +433,6 @@ function enemyShipFire(enemyShip) {
 
 function spawnHealthPack() {
     activeHealthPacks.push({
-        hp: ship.maxHP / 3,
         x: Math.random() * 950 + 25,
         y: -50,
         size: 50
@@ -448,12 +448,13 @@ function drawHealthPacks() {
     }
 }
 
-function pickupHealthPack(pack, i) {
+function pickupHealthPack(i) {
+
     if (ship.hp != ship.maxHP) {
-        if (ship.hp + pack.hp > ship.maxHP)
+        if (ship.hp + ship.maxHP / 3 > ship.maxHP)
             ship.hp = ship.maxHP
         else
-            ship.hp += pack.hp
+            ship.hp += ship.maxHP / 3
 
         activeHealthPacks.splice(i, 1)
         healSound.play()

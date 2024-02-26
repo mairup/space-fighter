@@ -152,7 +152,7 @@ resumeButton.addEventListener("click", () => {
 })
 
 document.addEventListener("keypress", (e) => {
-    if (e.key == "p" || e.key == "P")
+    if (e.key == "p" || e.key == "P" || e.key == " ")
         togglePause()
     if (e.key == "f" || e.key == "F")
         document.exitFullscreen().catch((err) => {
