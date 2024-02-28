@@ -161,7 +161,6 @@ window.addEventListener("mouseup", () => {
 function logFPS() {
     frameCounter = 0
     logFPSInterval = setInterval(() => {
-
         //console.log("time difference: ", Date.now() - currentTime)
         currentTime = Date.now()
         console.log('FPS: ', frameCounter / 2);
