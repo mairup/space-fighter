@@ -10,6 +10,7 @@ document.getElementById("buttons-container").style.fontSize = (canvas.width / 20
 context.font.fontWeight = 700
 
 let timeSurvived = 0;
+let defaultShipSpeed = 20
 
 canvas.style.zIndex = 0
 menuScreen.style.zIndex = 1
@@ -64,7 +65,7 @@ function restartGame() {
     ship = {
         x: 500,
         y: 700,
-        speed: 20,
+        speed: defaultShipSpeed,
         hp: 700,
         maxHP: 700,
         stamina: 100,
@@ -86,6 +87,7 @@ function restartGame() {
     activeShips = []
     activeEnemyBullets = []
     activeHealthPacks = []
+    activeEnergyPacks = []
 
     enemyBullets = {
         normal: {
@@ -114,6 +116,7 @@ function restartGame() {
     rockGenTime = 1000
     drawIntervalTime = 14
     healthPackTimeout = 15000
+    energyPackTimeout = 20000
 }
 
 startButton.addEventListener("click", () => {

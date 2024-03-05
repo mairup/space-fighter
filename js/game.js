@@ -1,5 +1,6 @@
 function drawShip() {
-    context.drawImage(blueGlowImg, ship.x - 63, ship.y - 20, 130, 130)
+    !activeEnergyPacks.some(pack => pack.isActive) ? context.drawImage(blueGlowImg, ship.x - 63, ship.y - 20, 130, 130) :
+        context.drawImage(blueGlowImg, ship.x - 72, ship.y - 30, 150, 150)
     context.drawImage(shipImg, ship.x - 75, ship.y - 75, 150, 150)
 
     /*
@@ -30,7 +31,11 @@ function moveShip() {
 }
 
 function fire() {
-    ship.stamina -= bullet.stamCost
+    let inactiveEnergyPackFlag = true
+
+    inactiveEnergyPackFlag = !activeEnergyPacks.some(pack => pack.isActive)
+
+    inactiveEnergyPackFlag ? ship.stamina -= bullet.stamCost : {} //if active energy pack is active, don't use stamina
     activeBullets.push({
         speed: bullet.speed,
         size: bullet.size,
@@ -38,9 +43,10 @@ function fire() {
         x: ship.x,
         y: ship.y - 70
     })
+
     gunCD = setTimeout(() => {
         gunCD = 0
-    }, bullet.rof)
+    }, inactiveEnergyPackFlag ? bullet.rof : bullet.rof / 2)
 
     blasterSound.play()
 }
@@ -292,6 +298,9 @@ function shipColl(obj, type, i) {
     if (flag && type == "healthPack")
         pickupHealthPack(i)
 
+    if (flag && type == "energyPack")
+        pickupEnergyPack(i)
+
     if (ship.hp <= 0 && !ship.isDead)
         return "break"
 
@@ -439,6 +448,16 @@ function spawnHealthPack() {
     })
 }
 
+function spawnEnergyPack() {
+    activeEnergyPacks.push({
+        x: Math.random() * 950 + 25,
+        y: -50,
+        size: 50,
+        isActive: false,
+        timeout: 300
+    })
+}
+
 function drawHealthPacks() {
     for (let i = 0; i < activeHealthPacks.length; i++) {
         context.drawImage(whiteGlowImg, activeHealthPacks[i].x - activeHealthPacks[i].size - 5, activeHealthPacks[i].y - activeHealthPacks[i].size, activeHealthPacks[i].size * 2.2, activeHealthPacks[i].size * 2.2)
@@ -446,6 +465,30 @@ function drawHealthPacks() {
 
         activeHealthPacks[i].y += 1
     }
+}
+
+function drawEnergyPacks() {
+    for (let i = 0; i < activeEnergyPacks.length; i++) {
+        if (activeEnergyPacks[i].isActive) {
+            handleActiveEnergyPack();
+            activeEnergyPacks[i].timeout--
+            if (activeEnergyPacks[i].timeout <= 0) {
+                activeEnergyPacks.splice(i, 1)
+                ship.speed = defaultShipSpeed
+            }
+        }
+        else {
+            context.drawImage(blueGlowImg, activeEnergyPacks[i].x - activeEnergyPacks[i].size - 5, activeEnergyPacks[i].y - activeEnergyPacks[i].size, activeEnergyPacks[i].size * 2.2, activeEnergyPacks[i].size * 2.2)
+            context.drawImage(energyPackImg, activeEnergyPacks[i].x - activeEnergyPacks[i].size / 2, activeEnergyPacks[i].y - activeEnergyPacks[i].size / 2, activeEnergyPacks[i].size, activeEnergyPacks[i].size)
+
+            activeEnergyPacks[i].y += 1
+        }
+    }
+}
+
+function handleActiveEnergyPack() {
+    ship.stamina += ship.maxStamina * 0.0018
+    ship.speed = defaultShipSpeed / 2
 }
 
 function pickupHealthPack(i) {
@@ -460,6 +503,14 @@ function pickupHealthPack(i) {
         healSound.play()
     }
 
+}
+
+function pickupEnergyPack(i) {
+    !activeEnergyPacks[i].isActive && healSound.play()
+    activeEnergyPacks[i].isActive = true
+
+
+    console.log("picked up energy pack %d", i)
 }
 
 function drawStamina() {

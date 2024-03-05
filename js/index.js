@@ -22,20 +22,26 @@ const redGlowImg = new Image()
 redGlowImg.src = "img/redGlow.png"
 const uiBox = new Image()
 uiBox.src = "img/uiBox.png"
-const energyPack = new Image()
-energyPack.src = "img/blue-energy.png"
-const blueGlow = new Image()
-blueGlow.src = "img/blue-glow.png"
+const energyPackImg = new Image()
+energyPackImg.src = "img/blue-energy.png"
 
 let leftTrigger = false
 let starGenTime
 let rockGenTime
 let drawIntervalTime
 let healthPackTimeout
+let energyPackTimeout
 let timeSurvivedTimeout
 let score
 
 let ship = {
+    x: undefined,
+    y: undefined,
+    speed: undefined,
+    hp: undefined,
+    maxHP: undefined,
+    stamina: undefined,
+    maxStamina: undefined,
     isDead: true
 }
 
@@ -96,7 +102,13 @@ let activeBulletExplosions = []
 let activeShipExplosions = []
 let activeEnemyBulletsExplosions = []
 
-let bullet = {}
+let bullet = {
+    speed: undefined,
+    rof: undefined,
+    size: undefined,
+    dmg: undefined,
+    stamCost: undefined
+}
 
 let star = {
     speed: 1,
@@ -117,6 +129,7 @@ let activeRocks = []
 let activeShips = []
 let activeEnemyBullets = []
 let activeHealthPacks = []
+let activeEnergyPacks = []
 
 let mousePos = {}
 
@@ -141,9 +154,10 @@ function startDrawInterval() {
         }
 
         drawHealthPacks()
+        drawEnergyPacks()
         drawEnemyShips()
         moveShip()
-        if (leftTrigger && gunCD == 0 && ship.stamina > bullet.stamCost) fire()
+        if (leftTrigger && gunCD == 0 && (ship.stamina > bullet.stamCost || activeEnergyPacks.some(pack => pack.isActive))) fire()
         drawBullets()
         drawRocks()
         rockBulletColl()
@@ -167,6 +181,11 @@ function startDrawInterval() {
                 endGame()
             }
 
+        for (let i = 0; i < activeEnergyPacks.length; i++)
+            if (shipColl(activeEnergyPacks[i], "energyPack", i) === "break") {
+                animateDeath()
+                endGame()
+            }
 
         for (let i = 0; i < activeRockExplosions.length; i++)
             drawRockExplosion(activeRockExplosions[i])
@@ -195,7 +214,7 @@ function startDrawInterval() {
 
 
 
-        ship.stamina += ship.maxStamina * 0.0013
+        ship.stamina += ship.maxStamina * 0.00125
         if (ship.stamina > ship.maxStamina) ship.stamina = ship.maxStamina
         drawUI()
         startDrawInterval()
@@ -215,7 +234,6 @@ let rockInterval
 function startRockInterval() {
     rockInterval = setTimeout(() => {
         if (rock.spawnCounter >= (10 * rock.intensity)) {
-            console.log(rockTime - Date.now())
             rockTime = Date.now()
             generateRock()
             rock.spawnCounter = 0
@@ -273,6 +291,14 @@ function startHealthPackInterval() {
     }, (Math.random() * (healthPackTimeout / 2)) + healthPackTimeout)
 }
 
+let energyPackInterval
+function startEnergyPackInterval() {
+    energyPackInterval = setTimeout(() => {
+        spawnEnergyPack()
+        startEnergyPackInterval()
+    }, (Math.random() * (energyPackTimeout / 2)) + energyPackTimeout)
+}
+
 function startIntervals() {
     startDrawInterval()
     startStarInterval()
@@ -280,6 +306,7 @@ function startIntervals() {
     startEnemyShipInterval()
     startIncreaseDifficultyInterval()
     startHealthPackInterval()
+    startEnergyPackInterval()
     startTimeInterval()
 }
 
@@ -291,6 +318,7 @@ function clearIntervals() {
     clearTimeout(enemyShipInterval)
     clearTimeout(increaseDifficultyInterval)
     clearTimeout(healthPackInterval)
+    clearTimeout(energyPackInterval)
     clearTimeout(timeSurvivedTimeout)
     drawInterval = null
     starInterval = null
@@ -298,5 +326,6 @@ function clearIntervals() {
     enemyShipInterval = null
     increaseDifficultyInterval = null
     healthPackInterval = null
+    energyPackInterval = null
     timeSurvivedTimeout = null
 }
