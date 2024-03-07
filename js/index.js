@@ -146,7 +146,7 @@ let drawInterval = null
 function startDrawInterval() {
     drawInterval = setTimeout(() => {
         frameCounter++ // !!!!!!!!!!!!!!!!!!!!!!!!!
-        context.clearRect(0, 0, 1000, 1000)
+        context.clearRect(0, 0, canvas.width, canvas.height)
         drawStars()
         if (ship.hp > 0) {
             drawShip()

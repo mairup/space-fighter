@@ -1,13 +1,9 @@
 const canvas = document.getElementById("canvas")
 const context = canvas.getContext("2d")
-context.font = '700 30px gameFont';
 const menuScreen = document.getElementById("menu-screen")
 const mainTitleDiv = document.getElementById("main-title")
 const startButton = document.getElementById("start-button")
 const resumeButton = document.getElementById("resume-button")
-menuScreen.style.fontSize = (canvas.width / 7) + "px"
-document.getElementById("buttons-container").style.fontSize = (canvas.width / 20) + "px"
-context.font.fontWeight = 700
 
 let timeSurvived = 0;
 let defaultShipSpeed = 20
@@ -131,10 +127,12 @@ resumeButton.addEventListener("click", () => {
 document.addEventListener("keydown", (e) => {
     if (e.key == "p" || e.key == "P" || e.key == " ")
         togglePause()
-    if (e.key == "f" || e.key == "F")
-        document.exitFullscreen().catch((err) => {
+    if (e.key == "f" || e.key == "F") {
+        document.exitFullscreen().catch(() => {
             document.body.requestFullscreen()
         })
+    }
+
     if (e.key == "F9") {
         if (typeof logFPSInterval === "undefined")
             logFPS()
@@ -148,8 +146,8 @@ document.addEventListener("keydown", (e) => {
 })
 
 canvas.addEventListener("mousemove", (e) => {
-    mousePos.x = (1000 / canvas.offsetWidth) * e.offsetX
-    mousePos.y = (1000 / canvas.offsetHeight) * e.offsetY
+    mousePos.x = (canvas.width / canvas.offsetWidth) * e.offsetX
+    mousePos.y = (canvas.height / canvas.offsetHeight) * e.offsetY
 })
 
 window.addEventListener("mousedown", () => {
@@ -166,7 +164,19 @@ function logFPS() {
     logFPSInterval = setInterval(() => {
         //console.log("time difference: ", Date.now() - currentTime)
         currentTime = Date.now()
-        console.log('FPS: ', frameCounter / 2);
+        console.log('FPS: ', frameCounter * 2);
         frameCounter = 0
-    }, 2000)
+    }, 500)
 }
+
+function resizeWindow() {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    context.font = '700 30px gameFont';
+    menuScreen.style.fontSize = (canvas.width / 7) + "px"
+    document.getElementById("buttons-container").style.fontSize = (canvas.width / 20) + "px"
+    context.font.fontWeight = 700
+}
+
+window.addEventListener("resize", resizeWindow)
+window.addEventListener("load", resizeWindow)

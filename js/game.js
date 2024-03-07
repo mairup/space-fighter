@@ -15,8 +15,6 @@ function drawShip() {
     */
 }
 
-
-
 function moveShip() {
     if (checkDistance(mousePos, ship) < 150) {
         ship.x += (mousePos.x - ship.x) / (ship.speed / 2)
@@ -68,7 +66,7 @@ function drawEnemyBullets() {
         context.drawImage(bulletR, -75, -75, 150, 150)
         context.restore();
 
-        if (activeEnemyBullets[j].y > 1100 || activeEnemyBullets[j].x > 1100 || activeEnemyBullets[j].x < -100)
+        if (activeEnemyBullets[j].y > (canvas.height + 100) || activeEnemyBullets[j].x > (canvas.width + 100))// || activeEnemyBullets[j].x < -100)
             activeEnemyBullets.splice(j, 1)
     }
 }
@@ -77,7 +75,7 @@ function generateStars() {
     activeStars.push({
         speed: star.speed,
         size: (Math.random() * star.size) + star.size,
-        x: Math.random() * 1000,
+        x: Math.random() * canvas.width,
         y: -100
     })
 }
@@ -86,7 +84,7 @@ function drawStars() {
     for (let i = 0; i < activeStars.length; i++) {
         context.drawImage(starImg, activeStars[i].x, activeStars[i].y, activeStars[i].size, activeStars[i].size)
         activeStars[i].y += activeStars[i].speed
-        if (activeStars[i].y > 1100)
+        if (activeStars[i].y > (canvas.height + 100))
             activeStars.splice(i, 1)
     }
 }
@@ -103,7 +101,7 @@ function generateRock() {
         relativeSize: rockSize / rock.size,
         hp: rockSize * rock.hpMultiplier,
         maxHP: rockSize * rock.hpMultiplier,
-        x: Math.random() * 1000,
+        x: Math.random() * canvas.width,
         y: -50,
         rotation: (Math.random() * 360),
         rotationSpeed: rotationSpeed,
@@ -254,7 +252,7 @@ function explodeEnemyShip(i) {
 
 function checkDistance(obj1, obj2) {
     if (obj1 && obj2)
-        return (Math.sqrt(Math.abs((obj1.x - obj2.x) * (obj1.x - obj2.x) + ((obj1.y - obj2.y) * (obj1.y - obj2.y)))))
+        return (Math.sqrt(Math.abs((obj1.x - obj2.x) * (obj1.x - obj2.x) + ((obj1.y - obj2.y) * (obj1.y - obj2.y))))) // 5 zaklepaju???
 }
 
 
@@ -262,10 +260,10 @@ function shipColl(obj, type, i) {
     let bool = true
     let flag = false
     if (obj) {
-        for (let y = 0; y < 40; y++)
+        for (let y = 0; y <= 40; y += 4)
             if (checkDistance(obj, { x: ship.x, y: ship.y - 70 + y }) < 5 + obj.size / 2)
                 flag = true
-        for (let y = 0; y < 40; y++)
+        for (let y = 0; y <= 40; y += 4)
             if (checkDistance(obj, { x: ship.x, y: ship.y - 20 + y }) < 20 + obj.size / 2)
                 flag = true
         if (checkDistance(obj, { x: ship.x, y: ship.y + 40 }) < 40 + obj.size / 2)
@@ -310,9 +308,8 @@ function shipColl(obj, type, i) {
 function animateJetSprite() {
     fireSprite.currentframe++
     context.drawImage(fireSprite.img, fireSprite.currentframe * fireSprite.width, 0, fireSprite.width, fireSprite.height, ship.x - 13, ship.y + 55, fireSprite.width, fireSprite.height)
-    if (fireSprite.currentframe >= fireSprite.totalframes) {
+    if (fireSprite.currentframe >= fireSprite.totalframes)
         fireSprite.currentframe = 0
-    }
 }
 
 
@@ -342,7 +339,7 @@ function drawShipExplosion(explosion) {
 }
 
 function drawHP() {
-    context.drawImage(hpTable, 50, 950, 900, 30)
+    context.drawImage(hpTable, canvas.width / 100, canvas.height / 8, canvas.width * 2 / 100, canvas.height * 5 / 6)
     context.fillStyle = 'rgba(65, 214, 45, 0.6)'
     if (ship.hp / ship.maxHP < 0.20) {
         context.fillStyle = 'rgba(214, 56, 45, 0.6)'
@@ -350,7 +347,7 @@ function drawHP() {
     }
     else
         canvas.style.filter = ""
-    context.fillRect(70, 955, ship.hp == Math.abs(ship.hp) ? (ship.hp / ship.maxHP) * 860 : 0, 20)
+    context.fillRect(canvas.width * 1.3 / 100, canvas.height * 1.15 / 8, canvas.width * 1.4 / 100, (ship.hp / ship.maxHP) * (canvas.height * 5 / 6) * 0.958)
 }
 
 function drawMiniHP() {
@@ -365,7 +362,7 @@ function drawMiniHP() {
 }
 
 function spawnEnemyShip() {
-    let originalX = Math.random() * 700 + 150
+    let originalX = Math.random() * canvas.width * 0.8 + canvas.width * 0.1
     activeShips.push({
         size: enemyShips[0].size,
         originalX: originalX,
@@ -442,7 +439,7 @@ function enemyShipFire(enemyShip) {
 
 function spawnHealthPack() {
     activeHealthPacks.push({
-        x: Math.random() * 950 + 25,
+        x: Math.random() * (canvas.width * 0.8) + canvas.width * 0.1,
         y: -50,
         size: 50
     })
@@ -450,7 +447,7 @@ function spawnHealthPack() {
 
 function spawnEnergyPack() {
     activeEnergyPacks.push({
-        x: Math.random() * 950 + 25,
+        x: Math.random() * (canvas.width * 0.8) + canvas.width * 0.1,
         y: -50,
         size: 50,
         isActive: false,
@@ -508,19 +505,17 @@ function pickupHealthPack(i) {
 function pickupEnergyPack(i) {
     !activeEnergyPacks[i].isActive && healSound.play()
     activeEnergyPacks[i].isActive = true
-
-
-    console.log("picked up energy pack %d", i)
+    // console.log("picked up energy pack %d", i)
 }
 
 function drawStamina() {
-    context.drawImage(hpTable, 50, 900, 900, 30)
+    context.drawImage(hpTable, canvas.width / 100 * 97, canvas.height / 8, canvas.width * 2 / 100, canvas.height * 5 / 6)
     context.fillStyle = 'rgba(28, 207, 252, 0.6)'
 
     if (ship.stamina / ship.maxStamina < 0.3)
         context.fillStyle = 'rgba(18, 125, 151, 0.6)'
 
-    context.fillRect(70, 905, ship.stamina == Math.abs(ship.stamina) ? (ship.stamina / ship.maxStamina) * 860 : 0, 20)
+    context.fillRect(canvas.width / 100 * 97.33, canvas.height / 8 * 1.15, canvas.width * 1.4 / 100, (ship.stamina / ship.maxStamina) * canvas.height * 5 / 6 * 0.957)
 }
 
 function animateDeath() {
@@ -552,9 +547,9 @@ function drawUI() {
     context.fillStyle = 'black';
     context.textAlign = 'center';
 
-    context.drawImage(uiBox, 10, 10, 400, 50)
-    context.fillText("Score: " + Math.floor(score), 200, 45, 290);
+    context.drawImage(uiBox, canvas.width / 100, canvas.height / 100, canvas.width / 4, canvas.height * 6 / 100)
+    context.fillText("Score: " + Math.floor(score), canvas.width / 8 + canvas.width / 100, canvas.height * 50 / 1000, canvas.width / 3);
 
-    context.drawImage(uiBox, 590, 10, 400, 50)
-    context.fillText("Time: " + Math.floor(timeSurvived), 790, 45, 290);
+    context.drawImage(uiBox, canvas.width * 3 / 4 - canvas.width / 100, canvas.height / 100, canvas.width / 4, canvas.height * 6 / 100)
+    context.fillText("Time: " + Math.floor(timeSurvived), canvas.width * 7 / 8 - canvas.width / 100, canvas.height * 50 / 1000, canvas.width / 3);
 }
