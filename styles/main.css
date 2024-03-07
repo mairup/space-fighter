@@ -32,7 +32,7 @@ body {
   height: 100vh;
   position: relative;
   background-color: rgba(100, 100, 100, 0.6);
-  aspect-ratio: 1;
+  width: 100vw;
   text-align: center;
   font-family: gameFont;
   display: flex;
