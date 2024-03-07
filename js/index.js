@@ -229,7 +229,7 @@ function startStarInterval() {
     }, (Math.random() * starGenTime) + starGenTime)
 }
 
-let rockTime = Date.now()
+//let rockTime = Date.now()
 let rockInterval
 function startRockInterval() {
     rockInterval = setTimeout(() => {
@@ -241,7 +241,7 @@ function startRockInterval() {
 
         else rock.spawnCounter++
         startRockInterval()
-    }, (((Math.random() * rockGenTime) + rockGenTime) / 10))
+    }, (((Math.random() * rockGenTime) + rockGenTime) / 10) / (canvas.width / 1000))
 }
 
 let enemyShipInterval
@@ -249,7 +249,7 @@ function startEnemyShipInterval() {
     enemyShipInterval = setTimeout(() => {
         spawnEnemyShip()
         startEnemyShipInterval()
-    }, (Math.random() * (enemyShipsTimeout / 2)) + enemyShipsTimeout)
+    }, ((Math.random() * (enemyShipsTimeout / 2)) + enemyShipsTimeout) / (canvas.width / 1000))
 }
 
 function startTimeInterval() {
@@ -264,9 +264,9 @@ let increaseDifficultyInterval
 function startIncreaseDifficultyInterval() {
     increaseDifficultyInterval = setTimeout(() => {
         if (rockGenTime > 200)
-            rockGenTime -= 40
+            rockGenTime -= 35
         else
-            rockGenTime -= rockGenTime / 50
+            rockGenTime -= rockGenTime / 60
 
         enemyBullets.normal.dmg *= 1.08
         enemyBullets.normal.rof -= enemyBullets.normal.rof / 50
