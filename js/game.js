@@ -111,7 +111,7 @@ function generateRock() {
 
 function drawRocks() {
     for (i = 0; i < activeRocks.length; i++)
-        if (activeRocks[i].y > 1050)
+        if (activeRocks[i].y > canvas.height + 100)
             activeRocks.splice(i, 1)
     for (let i = 0; i < activeRocks.length; i++) {
         activeRocks[i].x += activeRocks[i].xSpeed
@@ -380,8 +380,9 @@ function spawnEnemyShip() {
 
 function drawEnemyShips() {
     for (let i = 0; i < activeShips.length; i++)
-        if (activeShips[i].y > 1000 + enemyShips[0].size)
+        if (activeShips[i].y > canvas.height + enemyShips[0].size)
             activeShips.splice(i, 1)
+
     for (let i = 0; i < activeShips.length; i++) {
         context.save()
         context.translate(activeShips[i].x, activeShips[i].y)
