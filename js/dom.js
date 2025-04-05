@@ -116,6 +116,7 @@ function restartGame() {
 }
 
 startButton.addEventListener("click", () => {
+    handleFullscreen()
     restartGame()
     togglePause()
 })
@@ -176,6 +177,10 @@ function resizeWindow() {
     menuScreen.style.fontSize = (canvas.width / 7) + "px"
     document.getElementById("buttons-container").style.fontSize = (canvas.width / 20) + "px"
     context.font.fontWeight = 700
+}
+
+function handleFullscreen() {
+    !document.fullscreenElement && document.documentElement.requestFullscreen()
 }
 
 window.addEventListener("resize", resizeWindow)
